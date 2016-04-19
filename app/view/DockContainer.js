@@ -21,23 +21,32 @@ Ext.define('dockingpanel.view.DockContainer', {
     addPanel : function(panel, destination, location) {
         var destinationOwner = destination.ownerCt;
         var destinationLayout = destinationOwner.layout.type;
+        var positionToInsert = 0;
 
         if(location === "left" || location === "right") {
             if(destinationLayout !== "hbox") {
                 destinationOwner = this.convertLayout(destination, "hbox");
             }
 
-            destinationOwner.add(panel);
+            positionToInsert = destinationOwner.items.indexOf(destination) + (location === "left" ? 0 : 1);
+
+            destinationOwner.insert(positionToInsert, panel);
         }
         else if(location === "top" || location === "bottom") {
             if(destinationLayout !== "vbox") {
                 destinationOwner = this.convertLayout(destination, "vbox");
             }
 
-            destinationOwner.add(panel);
+            positionToInsert = destinationOwner.items.indexOf(destination) + (location === "top" ? 0 : 1);
+
+            destinationOwner.insert(positionToInsert, panel);
         }
         else if(location === "center") {
-            console.error("tab not yet supported");
+            if(destinationOwner.getXType() !== "docktabpanel") {
+                destinationOwner = this.convertLayout(destination, "docktabpanel");
+            }
+
+            destinationOwner.add(panel);
         }
     },
 
@@ -48,14 +57,25 @@ Ext.define('dockingpanel.view.DockContainer', {
      * @returns Ext.container.Container
      */
     convertLayout : function(panel, layout) {
-        var newContainer = {
-            xtype : 'container',
-            layout : {
-                type : layout,
-                align: 'stretch'
-            },
-            flex : panel.flex
-        };
+        var newContainer = {};
+
+        if(layout === "docktabpanel") {
+            newContainer = {
+                xtype: 'docktabpanel',
+                flex: panel.flex,
+                plugins:[ Ext.create("dockingpanel.view.TabPanel.TabReorderer") ],
+            };
+        }
+        else {
+            newContainer = {
+                xtype: 'container',
+                layout: {
+                    type: layout,
+                    align: 'stretch'
+                },
+                flex: panel.flex
+            };
+        }
 
         var panelOwner = panel.ownerCt;
         var position = panelOwner.items.indexOf(panel);
@@ -65,6 +85,10 @@ Ext.define('dockingpanel.view.DockContainer', {
 
         panel.flex = 1;
         newContainer.add(panel);
+
+        if(layout === "docktabpanel") {
+            newContainer.setActiveItem(panel);
+        }
 
         return newContainer;
     }

@@ -1,6 +1,6 @@
-Ext.define('dockingpanel.view.DockPanel', {
-    extend: 'Ext.panel.Panel',
-    alias: 'widget.dockpanel',
+Ext.define('dockingpanel.view.DockTabPanel', {
+    extend: 'Ext.tab.Panel',
+    alias: 'widget.docktabpanel',
 
     requires: [
         'Ext.plugin.Viewport',
@@ -12,20 +12,13 @@ Ext.define('dockingpanel.view.DockPanel', {
         'dockingpanel.view.DropTarget'
     ],
 
-    title: 'Drag & Drop ',
-
-    init: function(c){
-
-    },
-
     initComponent: function(ctl) {
 
         var me = this;
-        this.title += Ext.id();
 
         this._posProxy = {};
         this._splitBox = {};
-        
+
         Ext.apply(this, {
             listeners: {
                 afterrender: function() {
@@ -36,7 +29,7 @@ Ext.define('dockingpanel.view.DockPanel', {
 
                     var target = Ext.create('dockingpanel.view.DropTarget', this, {});
 
-                    this._ddProxy.setHandleElId(Ext.get(this.header.id));
+                    this._ddProxy.setHandleElId(Ext.get(this.down("tabbar").id));
 
                     Ext.apply(this._ddProxy, {
                         startDrag: function(e) {
