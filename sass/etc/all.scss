@@ -1,0 +1,21 @@
+/*
+ * This is is imported by virtue of "sass.etc" in "app.json".
+ */
+
+.valid-zone .x-panel-body .x-autocontainer-innerCt {
+  background: #81d0f5 !important;
+}
+
+.x-target-highlighter {
+  background: #81d0f5;
+  opacity: .5;
+  position: absolute;
+}
+
+.x-target-splitbox {
+  height: 110px;
+  width: 110px;
+  background: url('split.png') transparent center center no-repeat;
+  position: absolute;
+  z-index: 10;
+}
