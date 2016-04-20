@@ -23,3 +23,35 @@
 .x-target-splitbox.center {
   background: url('split_center.png') transparent center center no-repeat;
 }
+
+.x-target-splitbox-north {
+  height: 32px;
+  width: 32px;
+  background: url('split-north.png') transparent center center no-repeat;
+  position: absolute;
+  z-index: 10;
+}
+
+.x-target-splitbox-east {
+  height: 32px;
+  width: 32px;
+  background: url('split-east.png') transparent center center no-repeat;
+  position: absolute;
+  z-index: 10;
+}
+
+.x-target-splitbox-south {
+  height: 32px;
+  width: 32px;
+  background: url('split-south.png') transparent center center no-repeat;
+  position: absolute;
+  z-index: 10;
+}
+
+.x-target-splitbox-west {
+  height: 32px;
+  width: 32px;
+  background: url('split-west.png') transparent center center no-repeat;
+  position: absolute;
+  z-index: 10;
+}

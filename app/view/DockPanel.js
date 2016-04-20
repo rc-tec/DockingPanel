@@ -1,98 +1,95 @@
-Ext.define('dockingpanel.view.DockPanel', {
+Ext.define('dockingpanel.view.DockContainer', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.dockpanel',
+    alias: 'widget.dockcontainer',
 
-    requires: [
-        'Ext.plugin.Viewport',
-        'Ext.dd.DragDropManager',
-        'Ext.util.Point',
-        'Ext.util.Region',
-        'Ext.util.Positionable',
-
-        'dockingpanel.view.DropTarget'
-    ],
-
-    title: 'Drag & Drop ',
-
-    init: function(c){
-
+    movePanel : function(panel, destination, location) {
+        this.removePanel(panel, false);
+        this.addPanel(panel, destination, location);
     },
 
-    initComponent: function(ctl) {
+    removePanel : function(panel, destroy) {
+        var owner = panel.ownerCt;
 
-        var me = this;
-        this.title += Ext.id();
+        if(owner) {
+            owner.remove(panel, destroy);
 
-        this._posProxy = {};
-        this._splitBox = {};
-        
-        Ext.apply(this, {
-            listeners: {
-                afterrender: function() {
+            if(owner.items.length === 0)
+                owner.destroy();
+        }
+    },
 
-                    this._ddProxy = Ext.create('Ext.dd.DDProxy', this.el, 'drag-panels', {
-                        isTarget: true
-                    });
+    addPanel : function(panel, destination, location) {
+        var destinationOwner = destination.ownerCt;
+        var destinationLayout = destinationOwner.layout.type;
+        var positionToInsert = 0;
 
-                    var target = Ext.create('dockingpanel.view.DropTarget', this, {});
-
-                    this._ddProxy.setHandleElId(Ext.get(this.header.id));
-
-                    Ext.apply(this._ddProxy, {
-                        startDrag: function(e) {
-                            target.disableTarget();
-                            //console.log('startDrag');
-                        },
-                        onDrag: function(e) {
-                            //console.log('onDrag');
-                        },
-                        onDragEnter: function(e, id) {
-                            //console.log('onDragEnter');
-                            Ext.dd.DragDropManager.getDDById(id).notifyEnter(this,  e.getXY()[0], e.getXY()[1]);
-                        },
-                        onDragOver: function(e, id) {
-
-                            //console.log('onDragOver');
-                            Ext.dd.DragDropManager.getDDById(id).notifyOver(this,  e.getXY()[0], e.getXY()[1]);
-                        },
-                        onDragOut: function(e, id) {
-                            //console.log('onDragOut');
-                            //Ext.dd.DragDropManager.getDDById(id).notifyOut(this,  e.getXY()[0], e.getXY()[1]);
-                        },
-                        onDragDrop: function(e, id) {
-                            var dest = Ext.dd.DragDropManager.getDDById(id);
-                            if (dest.isEnabled()) {
-                                dest.notifyEndDrag(this,e.getXY()[0], e.getXY()[1]);
-                                target.enableTarget();
-                                var destLoc = dest.getDestination();
-                                if (destLoc !== null) {
-                                    Ext.getCmp(dest.id).up("dockcontainer").movePanel(Ext.getCmp(this.id), Ext.getCmp(dest.id), destLoc);
-                                }
-                            }
-                        },
-                        onInvalidDrop: function() {
-
-                        },
-                        endDrag: function(e, id) {
-                            var targets = Ext.dd.DragDropManager.getRelated(this, true);
-
-                            for(var i = 0; i < targets.length; i++) {
-                                targets[i].notifyEndDrag(this,  e.getXY()[0], e.getXY()[1]);
-                            }
-
-                            target.enableTarget();
-                        },
-                        scope : this
-                    });
-
-                }.bind(this)
+        if(location === "left" || location === "right") {
+            if(destinationLayout !== "hbox") {
+                destinationOwner = this.convertLayout(destination, "hbox");
             }
 
-        });
+            positionToInsert = destinationOwner.items.indexOf(destination) + (location === "left" ? 0 : 1);
 
-        this.callParent(arguments);
+            destinationOwner.insert(positionToInsert, panel);
+        }
+        else if(location === "top" || location === "bottom") {
+            if(destinationLayout !== "vbox") {
+                destinationOwner = this.convertLayout(destination, "vbox");
+            }
+
+            positionToInsert = destinationOwner.items.indexOf(destination) + (location === "top" ? 0 : 1);
+
+            destinationOwner.insert(positionToInsert, panel);
+        }
+        else if(location === "center") {
+            if(destinationOwner.getXType() !== "droptabpanel") {
+                destinationOwner = this.convertLayout(destination, "droptabpanel");
+            }
+
+            destinationOwner.add(panel);
+        }
     },
 
+    /**
+     * Converts any given panel to an hbox or vbox container with the panel in it
+     * @param panel
+     * @param layout hbox or vbox
+     * @returns Ext.container.Container
+     */
+    convertLayout : function(panel, layout) {
+        var newContainer = {};
 
+        if(layout === "droptabpanel") {
+            newContainer = {
+                xtype: 'droptabpanel',
+                flex: panel.flex,
+                plugins : [ Ext.create("dockingpanel.view.TabPanel.TabReorderer") ]
+            };
+        }
+        else {
+            newContainer = {
+                xtype: 'container',
+                layout: {
+                    type: layout,
+                    align: 'stretch'
+                },
+                flex: panel.flex
+            };
+        }
+
+        var panelOwner = panel.ownerCt;
+        var position = panelOwner.items.indexOf(panel);
+
+        panelOwner.remove(panel, false);
+        newContainer = panelOwner.insert(position, newContainer);
+
+        panel.flex = 1;
+        newContainer.add(panel);
+
+        if(layout === "droptabpanel") {
+            newContainer.setActiveItem(panel);
+        }
+
+        return newContainer;
+    }
 });
-

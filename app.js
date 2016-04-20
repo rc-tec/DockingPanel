@@ -9,7 +9,7 @@ Ext.application({
     extend: 'dockingpanel.Application',
 
     requires: [
-        'dockingpanel.view.DockPanel',
+        'dockingpanel.view.DropPanel',
         'dockingpanel.view.MainView',
     ],
 
