@@ -1,10 +1,37 @@
-Ext.define('dockingpanel.view.DockContainer', {
+Ext.define('dockingpanel.view.DockPanel', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.dockcontainer',
+    alias: 'widget.dockpanel',
+
+    layout : 'fit',
+
+    initComponent : function() {
+        this.callParent(arguments);
+
+        if(this.items.length === 0) {
+            this.hide();
+        }
+    },
+
+    getDockingContainer : function() {
+        return this.up("dockcontainer");
+    },
+
+    supportsRegion : function(region) {
+        if(this.region !== "center")
+            return false;
+
+        return this.getDockingContainer().supportedRegions.indexOf(region) >= 0;
+    },
 
     movePanel : function(panel, destination, location) {
         this.removePanel(panel, false);
-        this.addPanel(panel, destination, location);
+
+        if(["center", "left", "top", "bottom", "right"].indexOf(location) >= 0) {
+            this.addPanel(panel, destination, location);
+        }
+        else if(["north", "south", "east", "west"].indexOf(location) >= 0) {
+            this.getDockingContainer().addPanel(panel, location);
+        }
     },
 
     removePanel : function(panel, destroy) {
