@@ -29,7 +29,8 @@ Ext.define('dockingpanel.view.MainView', {
                             xtype: 'droppanel',
                             flex: 1,
                             html: 'Left Box',
-                            layout: 'fit'
+                            layout: 'fit',
+                            title : 'South'
                         }
                     ]
                 },
@@ -43,7 +44,8 @@ Ext.define('dockingpanel.view.MainView', {
                             xtype: 'droppanel',
                             flex: 1,
                             html: 'Left Box',
-                            layout: 'fit'
+                            layout: 'fit',
+                            title : 'West'
                         }
                     ]
                 },
@@ -57,7 +59,8 @@ Ext.define('dockingpanel.view.MainView', {
                             xtype: 'droppanel',
                             flex: 1,
                             html: 'Left Box',
-                            layout: 'fit'
+                            layout: 'fit',
+                            title : 'East'
                         }
                     ]
                 },
@@ -74,7 +77,8 @@ Ext.define('dockingpanel.view.MainView', {
                             xtype: 'droppanel',
                             flex: 1,
                             html: 'Left Box',
-                            layout: 'fit'
+                            layout: 'fit',
+                            title : 'Most Left'
                         },
                         {
                             xtype : 'panel',
@@ -87,19 +91,51 @@ Ext.define('dockingpanel.view.MainView', {
                                 {
                                     xtype: 'droppanel',
                                     html: 'Top Box',
-                                    flex: 1
+                                    flex: 1,
+                                    title : 'Top'
                                 },
                                 {
                                     xtype: 'droppanel',
                                     html: 'Bottom Box',
-                                    flex: 1
+                                    flex: 1,
+                                    title : 'Bottom'
                                 }
                             ]
                         },
                         {
+                            xtype: "droptabpanel",
+                            flex: 1,
+                            layout:
+                            {
+                                type: "card"
+                            },
+                            items: [
+                                {
+                                    xtype: "droppanel",
+                                    title : "Erster Eintrag",
+                                    flex: 1,
+                                    layout:
+                                    {
+                                        type: "autocontainer"
+                                    },
+                                    items: []
+                                },
+                                {
+                                    xtype: "droppanel",
+                                    title : "Zweiter Eintrag",
+                                    flex: 1,
+                                    layout:
+                                    {
+                                        type: "autocontainer"
+                                    },
+                                    items: []
+                                }]
+                        },
+                        {
                             xtype: 'droppanel',
                             flex: 1,
-                            html: 'Right Box'
+                            html: 'Right Box',
+                            title : 'Most Right'
                         }
                     ]
                 }

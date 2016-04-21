@@ -59,7 +59,7 @@ Ext.define('dockingpanel.view.DockContainer', {
 
     getJson : function() {
         var properties = [
-            'xtype', 'flex', 'itemId', 'width', 'height', 'html', 'extra', 'region'
+            'xtype', 'flex', 'itemId', 'width', 'height', 'html', 'extra', 'region', 'title'
         ], i, property;
 
         var _recRead = function(cmp) {

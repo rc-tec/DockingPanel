@@ -14,14 +14,14 @@ Ext.define('dockingpanel.view.DropTabPanel', {
 
     initComponent: function(cfg) {
         //var ddPlugin = Ext.create('dockingpanel.view.dd.DDPanelPlugin');
-        var reorderPlugin = Ext.create("dockingpanel.view.TabPanel.TabReorderer");
+        //var reorderPlugin = Ext.create("dockingpanel.view.TabPanel.TabReorderer");
 
         if(this.plugins) {
             //this.plugins.push(ddPlugin);
-            this.plugins.push(reorderPlugin);
+            //this.plugins.push(ddPlugin);
         }
         else {
-            this.plugins = [reorderPlugin];
+            //this.plugins = [ddPlugin];
         }
 
         this.callParent(arguments);

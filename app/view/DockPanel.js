@@ -37,10 +37,10 @@ Ext.define('dockingpanel.view.DockPanel', {
         this.removePanel(panel, false);
 
         if(["center", "left", "top", "bottom", "right"].indexOf(location) >= 0) {
-            this.addPanel(panel, destination, location);
+            this.addPanel(panel.cloneConfig(), destination, location);
         }
         else if(["north", "south", "east", "west"].indexOf(location) >= 0) {
-            this.getDockingContainer().addPanel(panel, location);
+            this.getDockingContainer().addPanel(panel.cloneConfig(), location);
         }
     },
 
@@ -50,6 +50,14 @@ Ext.define('dockingpanel.view.DockPanel', {
         if(owner) {
             owner.remove(panel, destroy);
 
+            if(owner.getXType() === "droptabpanel") {
+                if(owner.items.length === 1) {
+                    //Move item to owners parent
+
+                    this.convertTabLayoutToPanel(owner);
+                }
+            }
+
             if(owner.items.length === 0) {
                 if(owner.getXType() === "dockpanel" && owner.region === "center") {
                     //Create dummy drop panel
@@ -58,7 +66,11 @@ Ext.define('dockingpanel.view.DockPanel', {
                     });
                 }
                 else {
-                    owner.destroy();
+                    if(owner.ownerCt.items.length === 1)
+                        this.removePanel(owner, true);
+                    else {
+                        owner.destroy();
+                    }
                 }
             }
         }
@@ -107,7 +119,8 @@ Ext.define('dockingpanel.view.DockPanel', {
                 destinationOwner = this.convertLayout(destination, "droptabpanel");
             }
 
-            destinationOwner.add(panel);
+            destinationOwner.insert(0, panel);
+            destinationOwner.setActiveItem(panel);
         }
 
         if(originalDestination.getXType() === "emptydroppanel") {
@@ -148,12 +161,26 @@ Ext.define('dockingpanel.view.DockPanel', {
         newContainer = panelOwner.insert(position, newContainer);
 
         panel.flex = 1;
-        newContainer.add(panel);
+        panel = newContainer.add(panel.cloneConfig());
 
         if(layout === "droptabpanel") {
             newContainer.setActiveItem(panel);
         }
 
         return newContainer;
+    },
+
+    /**
+     * Converts Tab Entry to normal panel
+     *
+     * @param tabPanel
+     */
+    convertTabLayoutToPanel : function(tabPanel) {
+        var lastTabItem = tabPanel.items.getAt(0);
+        var index = tabPanel.ownerCt.items.indexOf(tabPanel);
+
+        tabPanel.remove(lastTabItem, false);
+
+        tabPanel.ownerCt.insert(index, lastTabItem.cloneConfig());
     }
 });
