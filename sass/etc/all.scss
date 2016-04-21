@@ -55,3 +55,59 @@
   position: absolute;
   z-index: 10;
 }
+
+.x-target-splitbox-top, .x-target-splitbox-bottom, .x-target-splitbox-left, .x-target-splitbox-right, .x-target-splitbox-center {
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  z-index:9
+}
+
+.x-target-splitbox-top {
+  background: url('split-top.png') transparent center center no-repeat;
+
+  &.inactive {
+    background: url('split-top-inactive.png') transparent center center no-repeat;
+  }
+}
+
+.x-target-splitbox-bottom {
+  background: url('split-bottom.png') transparent center center no-repeat;
+
+  &.inactive {
+    background: url('split-bottom-inactive.png') transparent center center no-repeat;
+  }
+}
+
+.x-target-splitbox-left {
+  background: url('split-left.png') transparent center center no-repeat;
+
+  &.inactive {
+    background: url('split-left-inactive.png') transparent center center no-repeat;
+  }
+}
+
+.x-target-splitbox-right {
+  background: url('split-right.png') transparent center center no-repeat;
+
+  &.inactive {
+    background: url('split-right-inactive.png') transparent center center no-repeat;
+  }
+}
+
+.x-target-splitbox-center {
+  background: url('split-center.png') transparent center center no-repeat;
+
+  &.inactive {
+    background: url('split-center-inactive.png') transparent center center no-repeat;
+  }
+}
+
+
+.x-target-splitbox-bg {
+  height: 110px;
+  width: 110px;
+  background: url('split-background.png') transparent center center no-repeat;
+  position: absolute;
+  z-index: 8;
+}

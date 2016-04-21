@@ -16,8 +16,11 @@ Ext.define('dockingpanel.view.dd.DDPanelPlugin', {
     },
 
     destroy : function() {
-        this._ddProxy.destroy();
-        this._target.destroy();
+        if(this._ddProxy)
+            this._ddProxy.destroy();
+
+        if(this._target)
+            this._target.destroy();
     },
 
     initDragDrop: function() {

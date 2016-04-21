@@ -4,6 +4,8 @@ Ext.define('dockingpanel.view.DockPanel', {
 
     layout : 'fit',
 
+    supportedDocks : ['top', 'left', 'right', 'bottom', 'center'],
+
     initComponent : function() {
         this.callParent(arguments);
 
@@ -23,6 +25,14 @@ Ext.define('dockingpanel.view.DockPanel', {
         return this.getDockingContainer().supportedRegions.indexOf(region) >= 0;
     },
 
+    supportsDock : function(location) {
+        if(this.down("emptydroppanel")) {
+            return ['center'].indexOf(location) >= 0;
+        }
+
+        return this.supportedDocks.indexOf(location) >= 0;
+    },
+
     movePanel : function(panel, destination, location) {
         this.removePanel(panel, false);
 
@@ -40,15 +50,36 @@ Ext.define('dockingpanel.view.DockPanel', {
         if(owner) {
             owner.remove(panel, destroy);
 
-            if(owner.items.length === 0)
-                owner.destroy();
+            if(owner.items.length === 0) {
+                if(owner.getXType() === "dockpanel" && owner.region === "center") {
+                    //Create dummy drop panel
+                    owner.add({
+                        xtype : 'emptydroppanel'
+                    });
+                }
+                else {
+                    owner.destroy();
+                }
+            }
         }
     },
 
     addPanel : function(panel, destination, location) {
-        var destinationOwner = destination.ownerCt;
-        var destinationLayout = destinationOwner.layout.type;
-        var positionToInsert = 0;
+        var destinationOwner,
+            originalDestination = destination,
+            destinationLayout,
+            positionToInsert = 0;
+
+        if(destination.getXType() === 'emptydroppanel') {
+            //destination = destination.ownerCt;
+        }
+
+        destinationOwner = destination.ownerCt;
+        destinationLayout = destinationOwner.layout.type;
+
+        if(!this.supportsDock(location)) {
+            Ext.raise(location + " is not supported here!");
+        }
 
         if(location === "left" || location === "right") {
             if(destinationLayout !== "hbox") {
@@ -69,11 +100,18 @@ Ext.define('dockingpanel.view.DockPanel', {
             destinationOwner.insert(positionToInsert, panel);
         }
         else if(location === "center") {
-            if(destinationOwner.getXType() !== "droptabpanel") {
+            if(originalDestination.getXType() === "emptydroppanel") {
+
+            }
+            else if (destinationOwner.getXType() !== "droptabpanel") {
                 destinationOwner = this.convertLayout(destination, "droptabpanel");
             }
 
             destinationOwner.add(panel);
+        }
+
+        if(originalDestination.getXType() === "emptydroppanel") {
+            originalDestination.destroy();
         }
     },
 
@@ -89,8 +127,7 @@ Ext.define('dockingpanel.view.DockPanel', {
         if(layout === "droptabpanel") {
             newContainer = {
                 xtype: 'droptabpanel',
-                flex: panel.flex,
-                plugins : [ Ext.create("dockingpanel.view.TabPanel.TabReorderer") ]
+                flex: panel.flex
             };
         }
         else {

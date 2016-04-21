@@ -18,13 +18,19 @@ Ext.define('dockingpanel.view.dd.DropTarget', {
 
         this.callParent([this._el.id, 'drag-panels', config]);
 
-        this._elProxy = this._el.createProxy({tag: 'div', cls: 'x-target-splitbox'}, this._el);
         this._posProxy = this._el.createProxy({tag: 'div', cls: 'x-target-highlighter'}, this._el);
 
         this._regionProxyNorth = this._el.createProxy({tag: 'div', cls: 'x-target-splitbox-north'}, this._el);
         this._regionProxyWest = this._el.createProxy({tag: 'div', cls: 'x-target-splitbox-west'}, this._el);
         this._regionProxyEast = this._el.createProxy({tag: 'div', cls: 'x-target-splitbox-east'}, this._el);
         this._regionProxySouth = this._el.createProxy({tag: 'div', cls: 'x-target-splitbox-south'}, this._el);
+
+        this._splitBoxProxyBackground = this._el.createProxy({tag: 'div', cls: 'x-target-splitbox-bg'}, this._el);
+        this._splitBoxProxyTop = this._el.createProxy({tag: 'div', cls: 'x-target-splitbox-top'}, this._el);
+        this._splitBoxProxyLeft = this._el.createProxy({tag: 'div', cls: 'x-target-splitbox-left'}, this._el);
+        this._splitBoxProxyRight = this._el.createProxy({tag: 'div', cls: 'x-target-splitbox-right'}, this._el);
+        this._splitBoxProxyBottom = this._el.createProxy({tag: 'div', cls: 'x-target-splitbox-bottom'}, this._el);
+        this._splitBoxProxyCenter = this._el.createProxy({tag: 'div', cls: 'x-target-splitbox-center'}, this._el);
 
         this._splitBoxNorth = false;
         this._splitBoxSouth = false;
@@ -82,7 +88,7 @@ Ext.define('dockingpanel.view.dd.DropTarget', {
             posY = 0,
             proxyOffset = 50,
             baseX = targetBox.x,
-            baseY = targetBox.y - 16;
+            baseY = targetBox.y;
 
         //Top and north are always centerd ON x
         if(region === "south" || region == "north") {
@@ -96,8 +102,6 @@ Ext.define('dockingpanel.view.dd.DropTarget', {
 
         if(region === "south") {
             posY = targetBox.height - proxyOffset;
-
-            baseY -= 32;
         }
         else if(region === "north") {
             posY = proxyOffset;
@@ -120,22 +124,62 @@ Ext.define('dockingpanel.view.dd.DropTarget', {
         if (!this._targetEnabled)
             return;
 
-        var elPos = this._el.getBox();
-        var elClass = Ext.getCmp(this._el.id);
-        var headerHeight = 0;
-
-        if (elClass.up("droptabpanel")) {
-            this._elProxy.addCls("center");
-        } else {
-            this._elProxy.removeCls("center");
-        }
-
+        var elPos = this._el.getBox(),
+            elClass = Ext.getCmp(this._el.id),
+            headerHeight = 0,
+            splitBoxX, splitBoxY,
+            isTabPanel = elClass.up("droptabpanel") ? true : false;
+        
         if(this._targetCt.header)
             headerHeight = this._targetCt.header.getHeight();
 
-        this._elProxy.setLocalXY((elPos.width / 2) - 55, ((elPos.height / 2) - 55) + (headerHeight / 2));
-        this._splitBox.x = elPos.x + (elPos.width / 2) - 55;
-        this._splitBox.y = elPos.y + (elPos.height / 2) - 55;
+        splitBoxX = (elPos.width / 2) - 55;
+        splitBoxY = ((elPos.height / 2) - 55) + (headerHeight / 2);
+
+        this._splitBoxProxyBackground.setLocalXY(splitBoxX, splitBoxY);
+        this._splitBoxProxyTop.setLocalXY(splitBoxX + 39, splitBoxY + 3);
+        this._splitBoxProxyRight.setLocalXY(splitBoxX + 75, splitBoxY + 39);
+        this._splitBoxProxyBottom.setLocalXY(splitBoxX + 39, splitBoxY + 75);
+        this._splitBoxProxyLeft.setLocalXY(splitBoxX + 3, splitBoxY + 39);
+        this._splitBoxProxyCenter.setLocalXY(splitBoxX + 39, splitBoxY + 39);
+
+        if(elClass.getDockingPanel().supportsDock("top") && !isTabPanel) {
+            this._splitBoxProxyTop.removeCls("inactive");
+        }
+        else {
+            this._splitBoxProxyTop.addCls("inactive");
+        }
+
+        if(elClass.getDockingPanel().supportsDock("right") && !isTabPanel) {
+            this._splitBoxProxyRight.removeCls("inactive");
+        }
+        else {
+            this._splitBoxProxyRight.addCls("inactive");
+        }
+
+        if(elClass.getDockingPanel().supportsDock("bottom") && !isTabPanel) {
+            this._splitBoxProxyBottom.removeCls("inactive");
+        }
+        else {
+            this._splitBoxProxyBottom.addCls("inactive");
+        }
+
+        if(elClass.getDockingPanel().supportsDock("left") && !isTabPanel) {
+            this._splitBoxProxyLeft.removeCls("inactive");
+        }
+        else {
+            this._splitBoxProxyLeft.addCls("inactive");
+        }
+
+        if(elClass.getDockingPanel().supportsDock("center")) {
+            this._splitBoxProxyCenter.removeCls("inactive");
+        }
+        else {
+            this._splitBoxProxyCenter.addCls("inactive");
+        }
+
+        this._splitBox.x = elPos.x + splitBoxX;
+        this._splitBox.y = elPos.y + splitBoxY;
         this._splitBox.top = Ext.create('Ext.util.Region', this._splitBox.y + 3, this._splitBox.x + 71, this._splitBox.y + 35, this._splitBox.x + 39);
         this._splitBox.left = Ext.create('Ext.util.Region', this._splitBox.y + 39, this._splitBox.x + 35, this._splitBox.y + 71, this._splitBox.x + 3);
         this._splitBox.bottom = Ext.create('Ext.util.Region', this._splitBox.y + 75, this._splitBox.x + 71, this._splitBox.y + 107, this._splitBox.x + 39);
@@ -175,84 +219,85 @@ Ext.define('dockingpanel.view.dd.DropTarget', {
         if(elClass.getDockingPanel().supportsRegion("south")) {
             this._splitBoxSouth = this.getPositionForRegionProxy("south", elPos, headerHeight);
 
-            this._regionProxySouth.setLocalXY(this._splitBoxSouth.x, this._splitBoxSouth.x);
+            this._regionProxySouth.setLocalXY(this._splitBoxSouth.x, this._splitBoxSouth.y);
             this._regionProxySouth.show();
         }
         else {
             this._splitBoxSouth = false;
         }
-        
-        this._elProxy.show();
+
+        this._splitBoxProxyBackground.show();
+        this._splitBoxProxyTop.show();
+        this._splitBoxProxyRight.show();
+        this._splitBoxProxyBottom.show();
+        this._splitBoxProxyLeft.show();
+        this._splitBoxProxyCenter.show();
     },
 
     notifyOver: function (id, target_x, target_y) {
         if (!this._targetEnabled)
             return;
 
-        var headerHeight = this._targetCt.header.getHeight();
-        var elPos = this._el.getBox(); //Ext.get(Ext.fly(id)).getBox();
-        var p = Ext.create('Ext.util.Point', target_x, target_y - (headerHeight / 2));
-        var box = {};
+        var elClass = Ext.getCmp(this._el.id),
+            headerHeight = 0,
+            elPos = this._el.getBox(),
+            p= Ext.create('Ext.util.Point', target_x, target_y - (headerHeight / 2)),
+            box = {},
+            isTabPanel = elClass.up("droptabpanel");
+
+        if(this._targetCt.header)
+            headerHeight = this._targetCt.header.getHeight();
 
         //Check for Left/Top/Right/Bottom/Tab
-        if (this._splitBox.top.contains(p))
+        if (!isTabPanel && elClass.getDockingPanel().supportsDock("top") && this._splitBox.top.contains(p))
         {
-            if (!this._elProxy.hasCls('center'))
-            {
-                this._destination = 'top';
-                box = {
-                    x: elPos.x,
-                    y: elPos.y,
-                    width: elPos.width,
-                    height: (elPos.height / 2) + (headerHeight / 2)
-                };
-                this._posProxy.setBox(box);
-                this._posProxy.show();
-            }
+            this._destination = 'top';
+            box = {
+                x: elPos.x,
+                y: elPos.y,
+                width: elPos.width,
+                height: (elPos.height / 2) + (headerHeight / 2)
+            };
+            this._posProxy.setBox(box);
+            this._posProxy.show();
         }
-        else if (this._splitBox.left.contains(p))
+        else if (!isTabPanel && elClass.getDockingPanel().supportsDock("left") && this._splitBox.left.contains(p))
         {
-            if (!this._elProxy.hasCls('center')) {
-                this._destination = 'left';
-                box = {
-                    x: elPos.x,
-                    y: elPos.y,
-                    width: elPos.width / 2,
-                    height: elPos.height
-                };
-                this._posProxy.setBox(box);
-                this._posProxy.show();
-            }
+            this._destination = 'left';
+            box = {
+                x: elPos.x,
+                y: elPos.y,
+                width: elPos.width / 2,
+                height: elPos.height
+            };
+            this._posProxy.setBox(box);
+            this._posProxy.show();
         }
-        else if (this._splitBox.bottom.contains(p))
+        else if (!isTabPanel && elClass.getDockingPanel().supportsDock("bottom") && this._splitBox.bottom.contains(p))
         {
-            if (!this._elProxy.hasCls('center')) {
-                this._destination = 'bottom';
-                box = {
-                    x: elPos.x,
-                    y: elPos.y + ((elPos.height / 2)) + (headerHeight / 2),
-                    width: elPos.width,
-                    height: (elPos.height / 2) - (headerHeight / 2)
-                };
-                this._posProxy.setBox(box);
-                this._posProxy.show();
-            }
+            this._destination = 'bottom';
+            box = {
+                x: elPos.x,
+                y: elPos.y + ((elPos.height / 2)) + (headerHeight / 2),
+                width: elPos.width,
+                height: (elPos.height / 2) - (headerHeight / 2)
+            };
+            this._posProxy.setBox(box);
+            this._posProxy.show();
         }
-        else if (this._splitBox.right.contains(p))
+        else if (!isTabPanel && elClass.getDockingPanel().supportsDock("right") && this._splitBox.right.contains(p))
         {
-            if (!this._elProxy.hasCls('center')) {
-                this._destination = 'right';
-                box = {
-                    x: elPos.x + (elPos.width / 2),
-                    y: elPos.y,
-                    width: elPos.width / 2,
-                    height: elPos.height
-                };
-                this._posProxy.setBox(box);
-                this._posProxy.show();
-            }
+            this._destination = 'right';
+            box = {
+                x: elPos.x + (elPos.width / 2),
+                y: elPos.y,
+                width: elPos.width / 2,
+                height: elPos.height
+            };
+            this._posProxy.setBox(box);
+            this._posProxy.show();
         }
-        else if (this._splitBox.center.contains(p))
+        else if (elClass.getDockingPanel().supportsDock("center") && this._splitBox.center.contains(p))
         {
             this._destination = 'center';
             box = {
@@ -333,7 +378,12 @@ Ext.define('dockingpanel.view.dd.DropTarget', {
 
     notifyOut: function (dd, x, y) {
         if (this._targetEnabled) {
-            this._elProxy.hide();
+            this._splitBoxProxyBackground.hide();
+            this._splitBoxProxyTop.hide();
+            this._splitBoxProxyRight.hide();
+            this._splitBoxProxyBottom.hide();
+            this._splitBoxProxyLeft.hide();
+            this._splitBoxProxyCenter.hide();
             this._regionProxyNorth.hide();
             this._regionProxySouth.hide();
             this._regionProxyEast.hide();
@@ -344,7 +394,12 @@ Ext.define('dockingpanel.view.dd.DropTarget', {
     notifyEndDrag: function (dd, x, y) {
         if (this._targetEnabled) {
             this._posProxy.hide();
-            this._elProxy.hide();
+            this._splitBoxProxyBackground.hide();
+            this._splitBoxProxyTop.hide();
+            this._splitBoxProxyRight.hide();
+            this._splitBoxProxyBottom.hide();
+            this._splitBoxProxyLeft.hide();
+            this._splitBoxProxyCenter.hide();
             this._regionProxyNorth.hide();
             this._regionProxySouth.hide();
             this._regionProxyEast.hide();
