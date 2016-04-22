@@ -1,0 +1,99 @@
+$dp-img-path:        "resources/DockingPanel/img" !default;
+
+.valid-zone .x-panel-body .x-autocontainer-innerCt {
+  background: #81d0f5 !important;
+}
+
+.x-target-highlighter {
+  background: #81d0f5;
+  opacity: .5;
+  position: absolute;
+}
+
+.x-target-splitbox-north {
+  height: 32px;
+  width: 32px;
+  background: url('#{$dp-img-path}/split-north.png') transparent center center no-repeat;
+  position: absolute;
+  z-index: 10;
+}
+
+.x-target-splitbox-east {
+  height: 32px;
+  width: 32px;
+  background: url('#{$dp-img-path}/split-east.png') transparent center center no-repeat;
+  position: absolute;
+  z-index: 10;
+}
+
+.x-target-splitbox-south {
+  height: 32px;
+  width: 32px;
+  background: url('#{$dp-img-path}/split-south.png') transparent center center no-repeat;
+  position: absolute;
+  z-index: 10;
+}
+
+.x-target-splitbox-west {
+  height: 32px;
+  width: 32px;
+  background: url('#{$dp-img-path}/split-west.png') transparent center center no-repeat;
+  position: absolute;
+  z-index: 10;
+}
+
+.x-target-splitbox-top, .x-target-splitbox-bottom, .x-target-splitbox-left, .x-target-splitbox-right, .x-target-splitbox-center {
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  z-index:9
+}
+
+.x-target-splitbox-top {
+  background: url('#{$dp-img-path}/split-top.png') transparent center center no-repeat;
+
+  &.inactive {
+    background: url('#{$dp-img-path}/split-top-inactive.png') transparent center center no-repeat;
+  }
+}
+
+.x-target-splitbox-bottom {
+  background: url('#{$dp-img-path}/split-bottom.png') transparent center center no-repeat;
+
+  &.inactive {
+    background: url('#{$dp-img-path}/split-bottom-inactive.png') transparent center center no-repeat;
+  }
+}
+
+.x-target-splitbox-left {
+  background: url('#{$dp-img-path}/split-left.png') transparent center center no-repeat;
+
+  &.inactive {
+    background: url('#{$dp-img-path}/split-left-inactive.png') transparent center center no-repeat;
+  }
+}
+
+.x-target-splitbox-right {
+  background: url('#{$dp-img-path}/split-right.png') transparent center center no-repeat;
+
+  &.inactive {
+    background: url('#{$dp-img-path}/split-right-inactive.png') transparent center center no-repeat;
+  }
+}
+
+.x-target-splitbox-center {
+  background: url('#{$dp-img-path}/split-center.png') transparent center center no-repeat;
+
+  &.inactive {
+    background: url('s#{$dp-img-path}/plit-center-inactive.png') transparent center center no-repeat;
+  }
+}
+
+
+.x-target-splitbox-bg {
+  height: 110px;
+  width: 110px;
+  background: url('#{$dp-img-path}/split-background.png') transparent center center no-repeat;
+  position: absolute;
+  z-index: 8;
+}

@@ -1,0 +1,36 @@
+{
+
+    "name": "DockingPanel",
+    "namespace": "DockingPanel",
+    "type": "code",
+    "toolkit": "${args.toolkit}",
+    "creator": "RCTec Gmbh",
+    "summary": "Allows Panels to be Drag'n'Drop docked to other Panels",
+    "detailedDescription": "Allows Panels to be Drag'n'Drop docked to other Panels",
+    "version": "0.0.1",
+    "compatVersion": "0.0.1",
+    "format": "1",
+    "output": "${package.dir}/build",
+    "local": true,
+    "sass" : {
+        "namespace": "DockingPanel",
+        "src": "${package.dir}/sass/src,${package.dir}/${toolkit.name}/sass/src"
+    },
+    "classpath": "${package.dir}/src,${package.dir}/${toolkit.name}/src",
+
+    "example": {
+        "path": [
+            "${package.dir}/examples"
+        ],
+        "apps": [
+            "DockingPanelExample"
+        ]
+    },
+    "resources": [
+        {
+            "path": "${package.dir}/resources",
+            "output": "shared"
+        }
+    ],
+    "requires": []
+}
