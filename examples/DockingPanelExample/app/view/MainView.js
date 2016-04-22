@@ -112,7 +112,7 @@ Ext.define('DockingPanelExample.view.MainView', {
                             items: [
                                 {
                                     xtype: "droppanel",
-                                    title : "Erster Eintrag",
+                                    title : "First Entry",
                                     flex: 1,
                                     layout:
                                     {
@@ -122,7 +122,7 @@ Ext.define('DockingPanelExample.view.MainView', {
                                 },
                                 {
                                     xtype: "droppanel",
-                                    title : "Zweiter Eintrag",
+                                    title : "Second Entry",
                                     flex: 1,
                                     layout:
                                     {

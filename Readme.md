@@ -5,7 +5,7 @@ What does the DockingPanel do? Well, you maybe all know Visual Studio or Intelli
 
 ## Why did we do this? Isn't this bad for Look and Feel?
 
-In fact: NO. Not in our use case. We are building a large system with hundreds of different Layouts and View-Types, that are going to be disabled on an huge monitor. The user needs to have the freedom to customize the UI to perfectly fits their needs.
+In fact: NO. Not in our use case. We are building a large system with hundreds of different Layouts and View-Types, that are going to be displayed on an huge monitor. The user needs to have the freedom to customize the UI to perfectly fits their needs.
 
 ## How does it work
 
@@ -46,3 +46,6 @@ Because its possible to Dock into Border-Regions, and also within. There are thr
 
 ## Contributing
 The DockingPanel is at an very early stage. Its possible that its implementation is very unlikely to the Sencha "kind of things". But, if you're encounter some bugs or want some features. Feel free to contribute it to us :)
+
+## Preview
+![Screen](docs/screen.gif)
