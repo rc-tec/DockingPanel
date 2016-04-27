@@ -17,13 +17,13 @@ Ext.define('DockingPanelExample.view.MainView', {
                     xtype : 'dockpanel',
                     region : 'north',
                     height : 200,
-                    supportedDocks : ['center']
+                    supportedDocks : ['center', 'left', 'right']
                 },
                 {
                     xtype : 'dockpanel',
                     region : 'south',
                     height : 200,
-                    supportedDocks : ['center'],
+                    supportedDocks : ['center', 'left', 'right'],
                     items : [
                         {
                             xtype: 'droppanel',
@@ -38,7 +38,7 @@ Ext.define('DockingPanelExample.view.MainView', {
                     xtype : 'dockpanel',
                     region : 'west',
                     width : 200,
-                    supportedDocks : ['center'],
+                    supportedDocks : ['center', 'top', 'bottom'],
                     items : [
                         {
                             xtype: 'droppanel',
@@ -53,7 +53,7 @@ Ext.define('DockingPanelExample.view.MainView', {
                     xtype : 'dockpanel',
                     region : 'east',
                     width : 200,
-                    supportedDocks : ['center'],
+                    supportedDocks : ['center', 'top', 'bottom'],
                     items : [
                         {
                             xtype: 'droppanel',

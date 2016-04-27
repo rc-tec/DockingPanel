@@ -143,28 +143,28 @@ Ext.define('DockingPanel.dd.DropTarget', {
         this._splitBoxProxyLeft.setLocalXY(splitBoxX + 3, splitBoxY + 39);
         this._splitBoxProxyCenter.setLocalXY(splitBoxX + 39, splitBoxY + 39);
 
-        if(elClass.getDockingPanel().supportsDock("top") && !isTabPanel) {
+        if(elClass.getDockingPanel().supportsDock("top")) {
             this._splitBoxProxyTop.removeCls("inactive");
         }
         else {
             this._splitBoxProxyTop.addCls("inactive");
         }
 
-        if(elClass.getDockingPanel().supportsDock("right") && !isTabPanel) {
+        if(elClass.getDockingPanel().supportsDock("right")) {
             this._splitBoxProxyRight.removeCls("inactive");
         }
         else {
             this._splitBoxProxyRight.addCls("inactive");
         }
 
-        if(elClass.getDockingPanel().supportsDock("bottom") && !isTabPanel) {
+        if(elClass.getDockingPanel().supportsDock("bottom")) {
             this._splitBoxProxyBottom.removeCls("inactive");
         }
         else {
             this._splitBoxProxyBottom.addCls("inactive");
         }
 
-        if(elClass.getDockingPanel().supportsDock("left") && !isTabPanel) {
+        if(elClass.getDockingPanel().supportsDock("left")) {
             this._splitBoxProxyLeft.removeCls("inactive");
         }
         else {
@@ -249,7 +249,7 @@ Ext.define('DockingPanel.dd.DropTarget', {
             headerHeight = this._targetCt.header.getHeight();
 
         //Check for Left/Top/Right/Bottom/Tab
-        if (!isTabPanel && elClass.getDockingPanel().supportsDock("top") && this._splitBox.top.contains(p))
+        if (elClass.getDockingPanel().supportsDock("top") && this._splitBox.top.contains(p))
         {
             this._destination = 'top';
             box = {
@@ -261,7 +261,7 @@ Ext.define('DockingPanel.dd.DropTarget', {
             this._posProxy.setBox(box);
             this._posProxy.show();
         }
-        else if (!isTabPanel && elClass.getDockingPanel().supportsDock("left") && this._splitBox.left.contains(p))
+        else if (elClass.getDockingPanel().supportsDock("left") && this._splitBox.left.contains(p))
         {
             this._destination = 'left';
             box = {
@@ -273,7 +273,7 @@ Ext.define('DockingPanel.dd.DropTarget', {
             this._posProxy.setBox(box);
             this._posProxy.show();
         }
-        else if (!isTabPanel && elClass.getDockingPanel().supportsDock("bottom") && this._splitBox.bottom.contains(p))
+        else if (elClass.getDockingPanel().supportsDock("bottom") && this._splitBox.bottom.contains(p))
         {
             this._destination = 'bottom';
             box = {
@@ -285,7 +285,7 @@ Ext.define('DockingPanel.dd.DropTarget', {
             this._posProxy.setBox(box);
             this._posProxy.show();
         }
-        else if (!isTabPanel && elClass.getDockingPanel().supportsDock("right") && this._splitBox.right.contains(p))
+        else if (elClass.getDockingPanel().supportsDock("right") && this._splitBox.right.contains(p))
         {
             this._destination = 'right';
             box = {

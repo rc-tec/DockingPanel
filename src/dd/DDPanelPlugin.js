@@ -36,7 +36,9 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
             {
                 startDrag: function(e)
                 {
-                    this.target.disableTarget();
+                    if(!this.panel.up("droptabpanel")) {
+                        this.target.disableTarget();
+                    }
                 }.bind(this),
                 onDragEnter: function(e, id)
                 {
@@ -65,7 +67,7 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
                 onDragDrop: function(e, id)
                 {
                     dd = Ext.dd.DragDropManager.getDDById(id);
-
+                    
                     if (dd.isEnabled()) {
                         dd.notifyEndDrag(this,e.getXY()[0], e.getXY()[1]);
                         this.target.enableTarget();

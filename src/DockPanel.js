@@ -34,7 +34,21 @@ Ext.define('DockingPanel.DockPanel', {
     },
 
     movePanel : function(panel, destination, location) {
-        this.removePanel(panel, false);
+        if (destination.up("droptabpanel") && panel.up("droptabpanel")) {
+            //if we move something out of an droptabpanel but want it to dock beside itself
+            //we need the droptabpanels parent
+            if(panel.up("droptabpanel").items.length > 2) {
+                destination = destination.up("droptabpanel");
+            }
+        }
+
+        var newDestination = this.removePanel(panel, false);
+
+        //TabPanel is going to be divided into hbox or vbox
+        //so we need a new destination panel => the newly created vbox/hobx
+        if(newDestination) {
+            destination = newDestination;
+        }
 
         if(["center", "left", "top", "bottom", "right"].indexOf(location) >= 0) {
             this.addPanel(panel.cloneConfig(), destination, location);
@@ -45,7 +59,8 @@ Ext.define('DockingPanel.DockPanel', {
     },
 
     removePanel : function(panel, destroy) {
-        var owner = panel.ownerCt;
+        var owner = panel.ownerCt,
+            newDestination = null;
 
         if(owner) {
             owner.remove(panel, destroy);
@@ -53,8 +68,7 @@ Ext.define('DockingPanel.DockPanel', {
             if(owner.getXType() === "droptabpanel") {
                 if(owner.items.length === 1) {
                     //Move item to owners parent
-
-                    this.convertTabLayoutToPanel(owner);
+                    newDestination = this.convertTabLayoutToPanel(owner);
                 }
             }
 
@@ -74,16 +88,24 @@ Ext.define('DockingPanel.DockPanel', {
                 }
             }
         }
+
+        return newDestination;
     },
 
     addPanel : function(panel, destination, location) {
         var destinationOwner,
             originalDestination = destination,
             destinationLayout,
-            positionToInsert = 0;
+            positionToInsert = 0,
+            positionInOwner = 0;
 
         if(destination.getXType() === 'emptydroppanel') {
             //destination = destination.ownerCt;
+        }
+
+        if(destination.up("droptabpanel") && location !== 'center')
+        {
+            destination = destination.ownerCt;
         }
 
         destinationOwner = destination.ownerCt;
@@ -98,7 +120,12 @@ Ext.define('DockingPanel.DockPanel', {
                 destinationOwner = this.convertLayout(destination, "hbox");
             }
 
-            positionToInsert = destinationOwner.items.indexOf(destination) + (location === "left" ? 0 : 1);
+            positionInOwner = destinationOwner.items.indexOf(destination);
+            if(positionInOwner!==-1){
+                positionToInsert = positionInOwner + (location === "left" ? 0 : 1);
+            } else {
+                positionToInsert = (location === "left" ? 0 : 1)
+            }
 
             destinationOwner.insert(positionToInsert, panel);
         }
@@ -107,7 +134,12 @@ Ext.define('DockingPanel.DockPanel', {
                 destinationOwner = this.convertLayout(destination, "vbox");
             }
 
-            positionToInsert = destinationOwner.items.indexOf(destination) + (location === "top" ? 0 : 1);
+            positionInOwner = destinationOwner.items.indexOf(destination);
+            if(positionInOwner!==-1) {
+                positionToInsert = positionInOwner + (location === "top" ? 0 : 1);
+            } else {
+                positionToInsert = (location === "top" ? 0 : 1)
+            }
 
             destinationOwner.insert(positionToInsert, panel);
         }
@@ -161,10 +193,11 @@ Ext.define('DockingPanel.DockPanel', {
         newContainer = panelOwner.insert(position, newContainer);
 
         panel.flex = 1;
-        panel = newContainer.add(panel.cloneConfig());
-
         if(layout === "droptabpanel") {
+            panel = newContainer.add(panel.cloneConfig());
             newContainer.setActiveItem(panel);
+        } else {
+            newContainer.add(panel);
         }
 
         return newContainer;
@@ -181,6 +214,6 @@ Ext.define('DockingPanel.DockPanel', {
 
         tabPanel.remove(lastTabItem, false);
 
-        tabPanel.ownerCt.insert(index, lastTabItem.cloneConfig());
+        return tabPanel.ownerCt.insert(index, lastTabItem.cloneConfig());
     }
 });

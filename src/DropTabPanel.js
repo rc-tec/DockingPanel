@@ -3,15 +3,15 @@ Ext.define('DockingPanel.DropTabPanel', {
     alias: 'widget.droptabpanel',
 
     requires: [
-        'DockingPanel.dd.DropTarget'
+        'DockingPanel.dd.DropTarget',
+        'DockingPanel.dd.DDPanelPlugin'
     ],
 
     initComponent: function(cfg) {
-        //var ddPlugin = Ext.create('dockingpanel.view.dd.DDPanelPlugin');
+        //var ddPlugin = Ext.create('DockingPanel.dd.DDPanelPlugin');
         //var reorderPlugin = Ext.create("dockingpanel.view.TabPanel.TabReorderer");
 
         if(this.plugins) {
-            //this.plugins.push(ddPlugin);
             //this.plugins.push(ddPlugin);
         }
         else {
