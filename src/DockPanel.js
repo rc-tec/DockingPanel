@@ -42,7 +42,7 @@ Ext.define('DockingPanel.DockPanel', {
             }
         }
 
-        var newDestination = this.removePanel(panel, false);
+        var newDestination = this.removePanel(panel, destination, false);
 
         //TabPanel is going to be divided into hbox or vbox
         //so we need a new destination panel => the newly created vbox/hobx
@@ -58,7 +58,7 @@ Ext.define('DockingPanel.DockPanel', {
         }
     },
 
-    removePanel : function(panel, destroy) {
+    removePanel : function(panel, destination, destroy) {
         var owner = panel.ownerCt,
             newDestination = null;
 
@@ -66,9 +66,13 @@ Ext.define('DockingPanel.DockPanel', {
             owner.remove(panel, destroy);
 
             if(owner.getXType() === "droptabpanel") {
+                //DropTabPanel has one item left, so we need to convert it
                 if(owner.items.length === 1) {
-                    //Move item to owners parent
-                    newDestination = this.convertTabLayoutToPanel(owner);
+                    var dropTabPanelConverted = this.convertTabLayoutToPanel(owner);
+
+                    if(destination === panel) {
+                        newDestination = dropTabPanelConverted;
+                    }
                 }
             }
 
@@ -81,7 +85,7 @@ Ext.define('DockingPanel.DockPanel', {
                 }
                 else {
                     if(owner.ownerCt.items.length === 1)
-                        this.removePanel(owner, true);
+                        this.removePanel(owner, destination, true);
                     else {
                         owner.destroy();
                     }
