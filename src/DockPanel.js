@@ -5,6 +5,7 @@ Ext.define('DockingPanel.DockPanel', {
     layout : 'fit',
 
     supportedDocks : ['top', 'left', 'right', 'bottom', 'center'],
+    allowSplitter : true,
 
     initComponent : function() {
         this.callParent(arguments);
@@ -60,9 +61,24 @@ Ext.define('DockingPanel.DockPanel', {
 
     removePanel : function(panel, destination, destroy) {
         var owner = panel.ownerCt,
-            newDestination = null;
+            newDestination = null,
+            index = 0,
+            ownerChildCount,
+            nextSibling = null;
 
         if(owner) {
+            index = owner.items.indexOf(panel);
+            ownerChildCount = owner.items.length;
+
+            if(index < ownerChildCount) {
+                //Check if nextSibling is splitter, if so, remove it
+                nextSibling = panel.nextSibling();
+
+                if(nextSibling && nextSibling.getXType() === "splitter") {
+                    nextSibling.destroy();
+                }
+            }
+
             owner.remove(panel, destroy);
 
             if(owner.getXType() === "droptabpanel") {
@@ -72,6 +88,31 @@ Ext.define('DockingPanel.DockPanel', {
 
                     if(destination === panel) {
                         newDestination = dropTabPanelConverted;
+                    }
+                }
+            }
+
+            if(owner.layout.type === "hbox" || owner.layout.type === "vbox") {
+                var childsLeft = owner.query("panel").length;
+
+                //Check if its the last item in hbox,vbox and remove all remaining splitters
+                if(childsLeft <= 1) {
+                    var splitters = owner.query("splitter");
+
+                    for(var i = 0; i < splitters.length; i++) {
+                        splitters[i].destroy();
+                    }
+
+                    if(childsLeft === 0) {
+                        if(owner.previousSibling() && owner.previousSibling().getXType() === "splitter") {
+                            owner.previousSibling().destroy();
+                        }
+                    }
+                }
+                else {
+                    //Check if last item in box is splitter and remove it
+                    if(owner.items.last().getXType() === "splitter") {
+                        owner.items.last().destroy();
                     }
                 }
             }
@@ -132,6 +173,17 @@ Ext.define('DockingPanel.DockPanel', {
             }
 
             destinationOwner.insert(positionToInsert, panel);
+
+
+            if(this.allowSplitter) {
+                //if docked to the right, we need to insert the splitter left
+                if(location === "right") {
+                    destinationOwner.insert(positionToInsert, {xtype:'splitter'});
+                }
+                else {
+                    destinationOwner.insert(positionToInsert+1, {xtype:'splitter'});
+                }
+            }
         }
         else if(location === "top" || location === "bottom") {
             if(destinationLayout !== "vbox") {
@@ -146,6 +198,17 @@ Ext.define('DockingPanel.DockPanel', {
             }
 
             destinationOwner.insert(positionToInsert, panel);
+
+
+            if(this.allowSplitter) {
+                //if docked to the right, we need to insert the splitter left
+                if(location === "top") {
+                    destinationOwner.insert(positionToInsert+1, {xtype:'splitter'});
+                }
+                else {
+                    destinationOwner.insert(positionToInsert, {xtype:'splitter'});
+                }
+            }
         }
         else if(location === "center") {
             if(originalDestination.getXType() === "emptydroppanel") {

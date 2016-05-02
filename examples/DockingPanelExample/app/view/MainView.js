@@ -81,6 +81,9 @@ Ext.define('DockingPanelExample.view.MainView', {
                             title : 'Most Left'
                         },
                         {
+                            xtype : 'splitter'
+                        },
+                        {
                             xtype : 'panel',
                             flex : 1,
                             layout : {
@@ -95,12 +98,18 @@ Ext.define('DockingPanelExample.view.MainView', {
                                     title : 'Top'
                                 },
                                 {
+                                    xtype : 'splitter'
+                                },
+                                {
                                     xtype: 'droppanel',
                                     html: 'Bottom Box',
                                     flex: 1,
                                     title : 'Bottom'
                                 }
                             ]
+                        },
+                        {
+                            xtype : 'splitter'
                         },
                         {
                             xtype: "droptabpanel",
@@ -130,6 +139,9 @@ Ext.define('DockingPanelExample.view.MainView', {
                                     },
                                     items: []
                                 }]
+                        },
+                        {
+                            xtype : 'splitter'
                         },
                         {
                             xtype: 'droppanel',
