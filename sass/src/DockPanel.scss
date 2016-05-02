@@ -8,6 +8,10 @@ $dp-img-path:        "DockingPanel/img" !default;
   background: #81d0f5;
   opacity: .5;
   position: absolute;
+
+  &.x-target-highlighter-body {
+    z-index:100000;
+  }
 }
 
 .x-target-splitbox-north {

@@ -19,6 +19,7 @@ Ext.define('DockingPanel.dd.DropTarget', {
         this.callParent([this._el.id, 'drag-panels', config]);
 
         this._posProxy = this._el.createProxy({tag: 'div', cls: 'x-target-highlighter'}, this._el);
+        this._posProxyOutside = this._el.createProxy({tag: 'div', cls: 'x-target-highlighter x-target-highlighter-body'}, Ext.getBody());
 
         this._regionProxyNorth = this._el.createProxy({tag: 'div', cls: 'x-target-splitbox-north'}, this._el);
         this._regionProxyWest = this._el.createProxy({tag: 'div', cls: 'x-target-splitbox-west'}, this._el);
@@ -241,9 +242,11 @@ Ext.define('DockingPanel.dd.DropTarget', {
         var elClass = Ext.getCmp(this._el.id),
             headerHeight = 0,
             elPos = this._el.getBox(),
-            p= Ext.create('Ext.util.Point', target_x, target_y - (headerHeight / 2)),
+            p = Ext.create('Ext.util.Point', target_x, target_y - (headerHeight / 2)),
             box = {},
-            isTabPanel = elClass.up("droptabpanel");
+            isTabPanel = elClass.up("droptabpanel"),
+            maxWidthOutsideIndicator = 200,
+            maxHeightOutsideIndicator = 200;
 
         if(this._targetCt.header)
             headerHeight = this._targetCt.header.getHeight();
@@ -311,67 +314,79 @@ Ext.define('DockingPanel.dd.DropTarget', {
         }
         else
         {
+            var maxHeight = elPos.y > maxHeightOutsideIndicator ? maxHeightOutsideIndicator : elPos.y + headerHeight;
+            var maxWidth = elPos.x > maxWidthOutsideIndicator ? maxWidthOutsideIndicator : elPos.x;
+
             //Check for North/South/East/West
             if (this._splitBoxNorth && this._splitBoxNorth.region.contains(p))
             {
                 this._destination = 'north';
 
                 box = {
-                    x: elPos.x,
-                    y: elPos.y,
-                    width: elPos.width,
-                    height: elPos.height / 3
+                    x: 0,
+                    y: 0,
+                    width: Ext.getBody().getWidth(),
+                    height: maxHeight
                 };
 
-                this._posProxy.setBox(box);
-                this._posProxy.show();
+                this._posProxyOutside.setBox(box);
+                this._posProxyOutside.show();
             }
             else if (this._splitBoxSouth && this._splitBoxSouth.region.contains(p))
             {
                 this._destination = 'south';
 
+                if(elPos.y + elPos.height > maxHeightOutsideIndicator) {
+                    maxHeight = maxHeightOutsideIndicator;
+                }
+
                 box = {
-                    x: elPos.x,
-                    y: elPos.y + (elPos.height / 3) * 2,
-                    width: elPos.width,
-                    height: elPos.height / 3
+                    x: 0,
+                    y: Ext.getBody().getHeight() - maxHeight,
+                    width: Ext.getBody().getWidth(),
+                    height: maxHeight
                 };
 
-                this._posProxy.setBox(box);
-                this._posProxy.show();
+                this._posProxyOutside.setBox(box);
+                this._posProxyOutside.show();
             }
             else if (this._splitBoxWest && this._splitBoxWest.region.contains(p))
             {
                 this._destination = 'west';
 
                 box = {
-                    x: elPos.x,
-                    y: elPos.y,
-                    width: elPos.width / 3,
-                    height: elPos.height
+                    x: 0,
+                    y: 0,
+                    width: maxWidth,
+                    height: Ext.getBody().getHeight()
                 };
 
-                this._posProxy.setBox(box);
-                this._posProxy.show();
+                this._posProxyOutside.setBox(box);
+                this._posProxyOutside.show();
             }
             else if (this._splitBoxEast && this._splitBoxEast.region.contains(p))
             {
                 this._destination = 'east';
 
+                if(elPos.x + elPos.width > maxWidthOutsideIndicator) {
+                    maxWidth = maxWidthOutsideIndicator;
+                }
+
                 box = {
-                    x: elPos.x + (elPos.width / 3) * 2,
-                    y: elPos.y,
-                    width: elPos.width / 3,
-                    height: elPos.height
+                    x: Ext.getBody().getWidth() - maxWidth,
+                    y: 0,
+                    width: maxWidth,
+                    height: Ext.getBody().getHeight()
                 };
 
-                this._posProxy.setBox(box);
-                this._posProxy.show();
+                this._posProxyOutside.setBox(box);
+                this._posProxyOutside.show();
             }
             else
             {
                 this._destination = null;
                 this._posProxy.hide();
+                this._posProxyOutside.hide();
             }
         }
     },
@@ -394,6 +409,7 @@ Ext.define('DockingPanel.dd.DropTarget', {
     notifyEndDrag: function (dd, x, y) {
         if (this._targetEnabled) {
             this._posProxy.hide();
+            this._posProxyOutside.hide();
             this._splitBoxProxyBackground.hide();
             this._splitBoxProxyTop.hide();
             this._splitBoxProxyRight.hide();
