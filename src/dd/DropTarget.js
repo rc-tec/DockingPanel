@@ -314,8 +314,10 @@ Ext.define('DockingPanel.dd.DropTarget', {
         }
         else
         {
-            var maxHeight = elPos.y > maxHeightOutsideIndicator ? maxHeightOutsideIndicator : elPos.y + headerHeight;
-            var maxWidth = elPos.x > maxWidthOutsideIndicator ? maxWidthOutsideIndicator : elPos.x;
+            console.log(target_y, target_x);
+
+            var maxHeight = target_y > maxHeightOutsideIndicator ? maxHeightOutsideIndicator : target_y - 10;
+            var maxWidth = target_x > maxWidthOutsideIndicator ? maxWidthOutsideIndicator : target_x - 10;
 
             //Check for North/South/East/West
             if (this._splitBoxNorth && this._splitBoxNorth.region.contains(p))
@@ -336,8 +338,8 @@ Ext.define('DockingPanel.dd.DropTarget', {
             {
                 this._destination = 'south';
 
-                if(elPos.y + elPos.height > maxHeightOutsideIndicator) {
-                    maxHeight = maxHeightOutsideIndicator;
+                if(target_y - elPos.y > maxHeightOutsideIndicator) {
+                    maxHeight = Ext.getBody().getHeight() - (elPos.y + elPos.height);
                 }
 
                 box = {
@@ -368,8 +370,8 @@ Ext.define('DockingPanel.dd.DropTarget', {
             {
                 this._destination = 'east';
 
-                if(elPos.x + elPos.width > maxWidthOutsideIndicator) {
-                    maxWidth = maxWidthOutsideIndicator;
+                if(target_x - elPos.x > maxWidthOutsideIndicator) {
+                    maxWidth = Ext.getBody().getWidth() - (elPos.x + elPos.width);
                 }
 
                 box = {
