@@ -219,7 +219,10 @@ Ext.define('DockingPanel.DockPanel', {
             }
 
             destinationOwner.insert(0, panel);
-            destinationOwner.setActiveItem(panel);
+
+            if (destinationOwner.getXType() === "droptabpanel") {
+                destinationOwner.setActiveItem(panel);
+            }
         }
 
         if(originalDestination.getXType() === "emptydroppanel") {
