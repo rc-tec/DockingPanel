@@ -19,14 +19,13 @@ Ext.define('DockingPanel.DockContainer', {
         'south', 'east', 'west', 'north'
     ],
 
-    addPanel : function(panel, region) {
+    addPanel : function (panel, region) {
         var regionPanel = this.getDockPanelForRegion(region);
 
-        if(regionPanel) {
-            if(regionPanel.items.length > 0) {
-                regionPanel.addPanel(panel, regionPanel.down("droppanel"), 'center');
-            }
-            else {
+        if (regionPanel) {
+            if (regionPanel.items.length > 0) {
+                regionPanel.addPanel(panel, regionPanel.down('droppanel'), 'center');
+            } else {
                 //Create panel
                 regionPanel.add(panel);
             }
@@ -35,17 +34,17 @@ Ext.define('DockingPanel.DockContainer', {
         }
     },
 
-    getDockPanelForRegion : function(region) {
-        var regionPanel = this.down('dockpanel[region="'+region+'"]');
-        
-        if(!regionPanel) {
+    getDockPanelForRegion : function (region) {
+        var regionPanel = this.down('dockpanel[region="' + region + '"]');
+
+        if (!regionPanel) {
             regionPanel = this.createRegionDockPanel(region);
         }
 
         return regionPanel;
     },
 
-    createRegionDockPanel : function(region) {
+    createRegionDockPanel : function (region) {
         var panel = {
             xtype : 'dockpanel',
             region : region,
@@ -57,45 +56,46 @@ Ext.define('DockingPanel.DockContainer', {
         return this.add(panel);
     },
 
-    getJson : function() {
+    getJson : function () {
         var properties = [
             'xtype', 'flex', 'itemId', 'width', 'height', 'html', 'extra', 'region', 'title'
         ], i, property;
 
-        var _recRead = function(cmp) {
-            if(cmp.xtype === "bordersplitter")
+        var _recRead = function (cmp) {
+            if (cmp.xtype === 'bordersplitter')
                 return false;
 
             var obj = {};
 
-            for(i = 0; i < properties.length; i++) {
+            for (i = 0; i < properties.length; i++) {
                 property = properties[i];
 
-                if(cmp[property]) {
+                if (cmp[property]) {
                     obj[property] = cmp[property];
                 }
             }
 
-            if(cmp.layout) {
+            if (cmp.layout) {
                 obj.layout = {
                     type: cmp.layout.type,
                     align: cmp.layout.align
                 };
             }
 
-            if(cmp.items) {
+            if (cmp.items) {
                 obj.items = [];
 
                 for (var i = 0; i < cmp.items.getCount(); i++) {
                     newCmp = _recRead(cmp.items.getAt(i));
 
-                    if(newCmp)
+                    if (newCmp)
                         obj.items.push(newCmp);
                 }
             }
 
             return obj;
         };
+
         var res = _recRead(this);
         return JSON.stringify(res);
     }

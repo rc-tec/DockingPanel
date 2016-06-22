@@ -7,39 +7,39 @@ Ext.define('DockingPanel.DockPanel', {
     supportedDocks : ['top', 'left', 'right', 'bottom', 'center'],
     allowSplitter : true,
 
-    initComponent : function() {
+    initComponent : function () {
         this.callParent(arguments);
 
-        if(this.items.length === 0) {
+        if (this.items.length === 0) {
             this.hide();
         }
     },
 
-    getDockingContainer : function() {
-        return this.up("dockcontainer");
+    getDockingContainer : function () {
+        return this.up('dockcontainer');
     },
 
-    supportsRegion : function(region) {
-        if(this.region !== "center")
+    supportsRegion : function (region) {
+        if (this.region !== 'center')
             return false;
 
         return this.getDockingContainer().supportedRegions.indexOf(region) >= 0;
     },
 
-    supportsDock : function(location) {
-        if(this.down("emptydroppanel")) {
+    supportsDock : function (location) {
+        if (this.down('emptydroppanel')) {
             return ['center'].indexOf(location) >= 0;
         }
 
         return this.supportedDocks.indexOf(location) >= 0;
     },
 
-    movePanel : function(panel, destination, location) {
-        if (destination.up("droptabpanel") && panel.up("droptabpanel")) {
+    movePanel : function (panel, destination, location) {
+        if (destination.up('droptabpanel') && panel.up('droptabpanel')) {
             //if we move something out of an droptabpanel but want it to dock beside itself
             //we need the droptabpanels parent
-            if(panel.up("droptabpanel").items.length > 2) {
-                destination = destination.up("droptabpanel");
+            if (panel.up('droptabpanel').items.length > 2) {
+                destination = destination.up('droptabpanel');
             }
         }
 
@@ -47,85 +47,82 @@ Ext.define('DockingPanel.DockPanel', {
 
         //TabPanel is going to be divided into hbox or vbox
         //so we need a new destination panel => the newly created vbox/hobx
-        if(newDestination) {
+        if (newDestination) {
             destination = newDestination;
         }
 
-        if(["center", "left", "top", "bottom", "right"].indexOf(location) >= 0) {
+        if (['center', 'left', 'top', 'bottom', 'right'].indexOf(location) >= 0) {
             this.addPanel(panel.cloneConfig(), destination, location);
-        }
-        else if(["north", "south", "east", "west"].indexOf(location) >= 0) {
+        } else if (['north', 'south', 'east', 'west'].indexOf(location) >= 0) {
             this.getDockingContainer().addPanel(panel.cloneConfig(), location);
         }
     },
 
-    removePanel : function(panel, destination, destroy) {
+    removePanel : function (panel, destination, destroy) {
         var owner = panel.ownerCt,
             newDestination = null,
             index = 0,
             ownerChildCount,
             nextSibling = null;
 
-        if(owner) {
+        if (owner) {
             index = owner.items.indexOf(panel);
             ownerChildCount = owner.items.length;
 
-            if(index < ownerChildCount) {
+            if (index < ownerChildCount) {
                 //Check if nextSibling is splitter, if so, remove it
                 nextSibling = panel.nextSibling();
 
-                if(nextSibling && nextSibling.getXType() === "splitter") {
+                if (nextSibling && nextSibling.getXType() === 'splitter') {
                     nextSibling.destroy();
                 }
             }
 
             owner.remove(panel, destroy);
 
-            if(owner.getXType() === "droptabpanel") {
+            if (owner.getXType() === 'droptabpanel') {
                 //DropTabPanel has one item left, so we need to convert it
-                if(owner.items.length === 1) {
+                if (owner.items.length === 1) {
                     var dropTabPanelConverted = this.convertTabLayoutToPanel(owner);
 
-                    if(destination === panel) {
+                    if (destination === panel) {
                         newDestination = dropTabPanelConverted;
                     }
                 }
             }
 
-            if(owner.layout.type === "hbox" || owner.layout.type === "vbox") {
-                var childsLeft = owner.query("panel").length;
+            if (owner.layout.type === 'hbox' || owner.layout.type === 'vbox') {
+                var childsLeft = owner.query('panel').length;
 
                 //Check if its the last item in hbox,vbox and remove all remaining splitters
-                if(childsLeft <= 1) {
-                    var splitters = owner.query("splitter");
+                if (childsLeft <= 1) {
+                    var splitters = owner.query('splitter');
 
-                    for(var i = 0; i < splitters.length; i++) {
+                    for (var i = 0; i < splitters.length; i++) {
                         splitters[i].destroy();
                     }
 
-                    if(childsLeft === 0) {
-                        if(owner.previousSibling() && owner.previousSibling().getXType() === "splitter") {
+                    if (childsLeft === 0) {
+                        if (owner.previousSibling() && owner.previousSibling().getXType() === 'splitter') {
                             owner.previousSibling().destroy();
                         }
                     }
-                }
-                else {
+                } else {
                     //Check if last item in box is splitter and remove it
-                    if(owner.items.last().getXType() === "splitter") {
+                    if (owner.items.last().getXType() === 'splitter') {
                         owner.items.last().destroy();
                     }
                 }
             }
 
-            if(owner.items.length === 0) {
-                if(owner.getXType() === "dockpanel" && owner.region === "center") {
+            if (owner.items.length === 0) {
+                if (owner.getXType() === 'dockpanel' && owner.region === 'center') {
                     //Create dummy drop panel
                     owner.add({
                         xtype : 'emptydroppanel'
                     });
-                }
-                else {
-                    if(owner.ownerCt.items.length === 1)
+                } else {
+                    if (owner.ownerCt.items.length === 1)
                         this.removePanel(owner, destination, true);
                     else {
                         owner.destroy();
@@ -137,18 +134,18 @@ Ext.define('DockingPanel.DockPanel', {
         return newDestination;
     },
 
-    addPanel : function(panel, destination, location) {
+    addPanel : function (panel, destination, location) {
         var destinationOwner,
             originalDestination = destination,
             destinationLayout,
             positionToInsert = 0,
             positionInOwner = 0;
 
-        if(destination.getXType() === 'emptydroppanel') {
+        if (destination.getXType() === 'emptydroppanel') {
             //destination = destination.ownerCt;
         }
 
-        if(destination.up("droptabpanel") && location !== 'center')
+        if (destination.up('droptabpanel') && location !== 'center')
         {
             destination = destination.ownerCt;
         }
@@ -156,76 +153,69 @@ Ext.define('DockingPanel.DockPanel', {
         destinationOwner = destination.ownerCt;
         destinationLayout = destinationOwner.layout.type;
 
-        if(!this.supportsDock(location)) {
-            Ext.raise(location + " is not supported here!");
+        if (!this.supportsDock(location)) {
+            Ext.raise(location + ' is not supported here!');
         }
 
-        if(location === "left" || location === "right") {
-            if(destinationLayout !== "hbox") {
-                destinationOwner = this.convertLayout(destination, "hbox");
+        if (location === 'left' || location === 'right') {
+            if (destinationLayout !== 'hbox') {
+                destinationOwner = this.convertLayout(destination, 'hbox');
             }
 
             positionInOwner = destinationOwner.items.indexOf(destination);
-            if(positionInOwner!==-1){
-                positionToInsert = positionInOwner + (location === "left" ? 0 : 1);
+            if (positionInOwner !== -1) {
+                positionToInsert = positionInOwner + (location === 'left' ? 0 : 1);
             } else {
-                positionToInsert = (location === "left" ? 0 : 1)
+                positionToInsert = (location === 'left' ? 0 : 1);
             }
 
             destinationOwner.insert(positionToInsert, panel);
 
-
-            if(this.allowSplitter) {
+            if (this.allowSplitter) {
                 //if docked to the right, we need to insert the splitter left
-                if(location === "right") {
-                    destinationOwner.insert(positionToInsert, {xtype:'splitter'});
-                }
-                else {
-                    destinationOwner.insert(positionToInsert+1, {xtype:'splitter'});
+                if (location === 'right') {
+                    destinationOwner.insert(positionToInsert, { xtype:'splitter' });
+                } else {
+                    destinationOwner.insert(positionToInsert + 1, { xtype:'splitter' });
                 }
             }
-        }
-        else if(location === "top" || location === "bottom") {
-            if(destinationLayout !== "vbox") {
-                destinationOwner = this.convertLayout(destination, "vbox");
+        } else if (location === 'top' || location === 'bottom') {
+            if (destinationLayout !== 'vbox') {
+                destinationOwner = this.convertLayout(destination, 'vbox');
             }
 
             positionInOwner = destinationOwner.items.indexOf(destination);
-            if(positionInOwner!==-1) {
-                positionToInsert = positionInOwner + (location === "top" ? 0 : 1);
+            if (positionInOwner !== -1) {
+                positionToInsert = positionInOwner + (location === 'top' ? 0 : 1);
             } else {
-                positionToInsert = (location === "top" ? 0 : 1)
+                positionToInsert = (location === 'top' ? 0 : 1);
             }
 
             destinationOwner.insert(positionToInsert, panel);
 
-
-            if(this.allowSplitter) {
+            if (this.allowSplitter) {
                 //if docked to the right, we need to insert the splitter left
-                if(location === "top") {
-                    destinationOwner.insert(positionToInsert+1, {xtype:'splitter'});
-                }
-                else {
-                    destinationOwner.insert(positionToInsert, {xtype:'splitter'});
+                if (location === 'top') {
+                    destinationOwner.insert(positionToInsert + 1, { xtype:'splitter' });
+                } else {
+                    destinationOwner.insert(positionToInsert, { xtype:'splitter' });
                 }
             }
-        }
-        else if(location === "center") {
-            if(originalDestination.getXType() === "emptydroppanel") {
+        } else if (location === 'center') {
+            if (originalDestination.getXType() === 'emptydroppanel') {
 
-            }
-            else if (destinationOwner.getXType() !== "droptabpanel") {
-                destinationOwner = this.convertLayout(destination, "droptabpanel");
+            } else if (destinationOwner.getXType() !== 'droptabpanel') {
+                destinationOwner = this.convertLayout(destination, 'droptabpanel');
             }
 
             destinationOwner.insert(0, panel);
 
-            if (destinationOwner.getXType() === "droptabpanel") {
+            if (destinationOwner.getXType() === 'droptabpanel') {
                 destinationOwner.setActiveItem(panel);
             }
         }
 
-        if(originalDestination.getXType() === "emptydroppanel") {
+        if (originalDestination.getXType() === 'emptydroppanel') {
             originalDestination.destroy();
         }
     },
@@ -236,16 +226,15 @@ Ext.define('DockingPanel.DockPanel', {
      * @param layout hbox or vbox
      * @returns Ext.container.Container
      */
-    convertLayout : function(panel, layout) {
+    convertLayout : function (panel, layout) {
         var newContainer = {};
 
-        if(layout === "droptabpanel") {
+        if (layout === 'droptabpanel') {
             newContainer = {
                 xtype: 'droptabpanel',
                 flex: panel.flex
             };
-        }
-        else {
+        } else {
             newContainer = {
                 xtype: 'container',
                 layout: {
@@ -263,7 +252,7 @@ Ext.define('DockingPanel.DockPanel', {
         newContainer = panelOwner.insert(position, newContainer);
 
         panel.flex = 1;
-        if(layout === "droptabpanel") {
+        if (layout === 'droptabpanel') {
             panel = newContainer.add(panel.cloneConfig());
             newContainer.setActiveItem(panel);
         } else {
@@ -278,7 +267,7 @@ Ext.define('DockingPanel.DockPanel', {
      *
      * @param tabPanel
      */
-    convertTabLayoutToPanel : function(tabPanel) {
+    convertTabLayoutToPanel : function (tabPanel) {
         var lastTabItem = tabPanel.items.getAt(0);
         var index = tabPanel.ownerCt.items.indexOf(tabPanel);
 

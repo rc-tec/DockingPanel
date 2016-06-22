@@ -112,30 +112,30 @@ Ext.define('DockingPanelExample.view.MainView', {
                             xtype : 'splitter'
                         },
                         {
-                            xtype: "droptabpanel",
+                            xtype: 'droptabpanel',
                             flex: 1,
                             layout:
                             {
-                                type: "card"
+                                type: 'card'
                             },
                             items: [
                                 {
-                                    xtype: "droppanel",
-                                    title : "First Entry",
+                                    xtype: 'droppanel',
+                                    title : 'First Entry',
                                     flex: 1,
                                     layout:
                                     {
-                                        type: "autocontainer"
+                                        type: 'autocontainer'
                                     },
                                     items: []
                                 },
                                 {
-                                    xtype: "droppanel",
-                                    title : "Second Entry",
+                                    xtype: 'droppanel',
+                                    title : 'Second Entry',
                                     flex: 1,
                                     layout:
                                     {
-                                        type: "autocontainer"
+                                        type: 'autocontainer'
                                     },
                                     items: []
                                 }]

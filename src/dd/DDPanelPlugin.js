@@ -8,22 +8,22 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
 
     panel : null,
 
-    init: function(panel) {
+    init: function (panel) {
         this.panel = panel;
 
         this.panel.on('afterrender', this.initDragDrop, this);
         this.panel.on('destroy', this.destroy, this);
     },
 
-    destroy : function() {
-        if(this._ddProxy)
+    destroy : function () {
+        if (this._ddProxy)
             this._ddProxy.destroy();
 
-        if(this._target)
+        if (this._target)
             this._target.destroy();
     },
 
-    initDragDrop: function() {
+    initDragDrop: function () {
         var dd;
 
         this.ddProxy = Ext.create('Ext.dd.DDProxy', this.getDragId(), 'drag-panels', {
@@ -34,54 +34,54 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
 
         Ext.apply(this.ddProxy,
             {
-                startDrag: function(e)
+                startDrag: function (e)
                 {
-                    if(!this.panel.up("droptabpanel")) {
+                    if (!this.panel.up('droptabpanel')) {
                         this.target.disableTarget();
                     }
                 }.bind(this),
-                onDragEnter: function(e, id)
+                onDragEnter: function (e, id)
                 {
                     dd = Ext.dd.DragDropManager.getDDById(id);
 
-                    if(dd) {
+                    if (dd) {
                         dd.notifyEnter(this.panel, e.getXY()[0], e.getXY()[1]);
                     }
                 }.bind(this),
-                onDragOver: function(e, id)
+                onDragOver: function (e, id)
                 {
                     dd = Ext.dd.DragDropManager.getDDById(id);
 
-                    if(dd) {
+                    if (dd) {
                         dd.notifyOver(this.panel, e.getXY()[0], e.getXY()[1]);
                     }
                 }.bind(this),
-                onDragOut: function(e, id)
+                onDragOut: function (e, id)
                 {
                     dd = Ext.dd.DragDropManager.getDDById(id);
 
-                    if(dd) {
+                    if (dd) {
                         dd.notifyOut(this.panel, e.getXY()[0], e.getXY()[1]);
                     }
                 }.bind(this),
-                onDragDrop: function(e, id)
+                onDragDrop: function (e, id)
                 {
                     dd = Ext.dd.DragDropManager.getDDById(id);
-                    
+
                     if (dd.isEnabled()) {
-                        dd.notifyEndDrag(this,e.getXY()[0], e.getXY()[1]);
+                        dd.notifyEndDrag(this, e.getXY()[0], e.getXY()[1]);
                         this.target.enableTarget();
                         var destLoc = dd.getDestination();
                         if (destLoc !== null) {
-                            Ext.getCmp(dd.id).up("dockpanel").movePanel(Ext.getCmp(this.panel.id), Ext.getCmp(dd.id), destLoc);
+                            Ext.getCmp(dd.id).up('dockpanel').movePanel(Ext.getCmp(this.panel.id), Ext.getCmp(dd.id), destLoc);
                         }
                     }
                 }.bind(this),
-                endDrag: function(e, id)
+                endDrag: function (e, id)
                 {
                     var targets = Ext.dd.DragDropManager.getRelated(this.panel, true);
 
-                    for(var i = 0; i < targets.length; i++) {
+                    for (var i = 0; i < targets.length; i++) {
                         targets[i].notifyEndDrag(this.panel,  e.getXY()[0], e.getXY()[1]);
                     }
 
@@ -92,22 +92,22 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
         );
     },
 
-    clickValidator : function() {
+    clickValidator : function () {
         return true;
     },
 
-    getPanelHeaderId : function() {
-        if(this.panel.up("droptabpanel")) {
+    getPanelHeaderId : function () {
+        if (this.panel.up('droptabpanel')) {
             return this.panel.tab.id;
         }
 
-        if(this.panel.header)
+        if (this.panel.header)
             return this.panel.header.id;
 
         return this.panel.id;
     },
 
-    getDragId : function() {
+    getDragId : function () {
         return this.panel.tab ? this.panel.tab.el.id : this.panel.el.id;
     }
 });

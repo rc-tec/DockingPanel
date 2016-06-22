@@ -8,10 +8,10 @@ Ext.define('DockingPanel.DropPanel', {
 
     title: 'Drag & Drop ',
 
-    initComponent: function(cfg) {
+    initComponent: function (cfg) {
         var plugin = Ext.create('DockingPanel.dd.DDPanelPlugin');
 
-        if(this.plugins)
+        if (this.plugins)
             this.plugins.push(plugin);
         else
             this.plugins = [plugin];
@@ -19,8 +19,8 @@ Ext.define('DockingPanel.DropPanel', {
         this.callParent(arguments);
     },
 
-    getDockingPanel : function() {
-        return this.up("dockpanel");
+    getDockingPanel : function () {
+        return this.up('dockpanel');
     }
 });
 
