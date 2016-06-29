@@ -250,7 +250,8 @@ Ext.define('DockingPanel.dd.DropTarget', {
             };
             this._posProxy.setBox(box);
             this._posProxy.show();
-        } else if (elClass.getDockingPanel().supportsDock('left') && this._splitBox.left.contains(p))
+        }
+        else if (elClass.getDockingPanel().supportsDock('left') && this._splitBox.left.contains(p))
         {
             this._destination = 'left';
             box = {
@@ -261,7 +262,8 @@ Ext.define('DockingPanel.dd.DropTarget', {
             };
             this._posProxy.setBox(box);
             this._posProxy.show();
-        } else if (elClass.getDockingPanel().supportsDock('bottom') && this._splitBox.bottom.contains(p))
+        }
+        else if (elClass.getDockingPanel().supportsDock('bottom') && this._splitBox.bottom.contains(p))
         {
             this._destination = 'bottom';
             box = {
@@ -272,7 +274,8 @@ Ext.define('DockingPanel.dd.DropTarget', {
             };
             this._posProxy.setBox(box);
             this._posProxy.show();
-        } else if (elClass.getDockingPanel().supportsDock('right') && this._splitBox.right.contains(p))
+        }
+        else if (elClass.getDockingPanel().supportsDock('right') && this._splitBox.right.contains(p))
         {
             this._destination = 'right';
             box = {
@@ -283,7 +286,8 @@ Ext.define('DockingPanel.dd.DropTarget', {
             };
             this._posProxy.setBox(box);
             this._posProxy.show();
-        } else if (elClass.getDockingPanel().supportsDock('center') && this._splitBox.center.contains(p))
+        }
+        else if (elClass.getDockingPanel().supportsDock('center') && this._splitBox.center.contains(p))
         {
             this._destination = 'center';
             box = {
@@ -294,10 +298,9 @@ Ext.define('DockingPanel.dd.DropTarget', {
             };
             this._posProxy.setBox(box);
             this._posProxy.show();
-        } else
+        }
+        else
         {
-            console.log(target_y, target_x);
-
             var maxHeight = target_y > maxHeightOutsideIndicator ? maxHeightOutsideIndicator : target_y - 10;
             var maxWidth = target_x > maxWidthOutsideIndicator ? maxWidthOutsideIndicator : target_x - 10;
 
@@ -332,7 +335,8 @@ Ext.define('DockingPanel.dd.DropTarget', {
 
                 this._posProxyOutside.setBox(box);
                 this._posProxyOutside.show();
-            } else if (this._splitBoxWest && this._splitBoxWest.region.contains(p))
+            }
+            else if (this._splitBoxWest && this._splitBoxWest.region.contains(p))
             {
                 this._destination = 'west';
 
@@ -345,7 +349,8 @@ Ext.define('DockingPanel.dd.DropTarget', {
 
                 this._posProxyOutside.setBox(box);
                 this._posProxyOutside.show();
-            } else if (this._splitBoxEast && this._splitBoxEast.region.contains(p))
+            }
+            else if (this._splitBoxEast && this._splitBoxEast.region.contains(p))
             {
                 this._destination = 'east';
 
@@ -362,7 +367,8 @@ Ext.define('DockingPanel.dd.DropTarget', {
 
                 this._posProxyOutside.setBox(box);
                 this._posProxyOutside.show();
-            } else
+            }
+            else
             {
                 this._destination = null;
                 this._posProxy.hide();
