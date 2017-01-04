@@ -38,8 +38,18 @@ Ext.define('DockingPanel.DockPanel', {
         if (destination.up('droptabpanel') && panel.up('droptabpanel')) {
             //if we move something out of an droptabpanel but want it to dock beside itself
             //we need the droptabpanels parent
-            if (panel.up('droptabpanel').items.length > 2) {
-                destination = destination.up('droptabpanel');
+
+            if(destination.up('droptabpanel').id === panel.up('droptabpanel').id) {
+                if (panel.up('droptabpanel').items.length > 2) {
+                    destination = destination.up('droptabpanel');
+                }
+            }
+        }
+
+        //If we move from any droptabpanel, we need to add a flex property
+        if(panel.up('droptabpanel')) {
+            if(!panel.flex) {
+                panel.flex = 1;
             }
         }
 
@@ -118,9 +128,31 @@ Ext.define('DockingPanel.DockPanel', {
             if (owner.items.length === 0) {
                 if (owner.getXType() === 'dockpanel' && owner.region === 'center') {
                     //Create dummy drop panel
-                    owner.add({
-                        xtype : 'emptydroppanel'
-                    });
+                    var newCenter = null;
+                    var dockContainer = owner.up("dockcontainer");
+
+                    if(dockContainer.items.length > 1) {
+                        Ext.each(dockContainer.items.items, function(item) {
+                            if(item.region !== null && item.region !== 'center' && item.xtype !== 'bordersplitter') {
+                                newCenter = item;
+                                return false;
+                            }
+                        });
+                    }
+
+                    if(newCenter) {
+                        dockContainer.remove(owner, true);
+                        dockContainer.remove(newCenter, false);
+
+                        newCenter.region = 'center';
+
+                        dockContainer.add(newCenter);
+                    }
+                    else {
+                        owner.add({
+                            xtype: 'emptydroppanel'
+                        });
+                    }
                 } else {
                     if (owner.ownerCt.items.length === 1)
                         this.removePanel(owner, destination, true);
@@ -195,6 +227,7 @@ Ext.define('DockingPanel.DockPanel', {
 
             if (this.allowSplitter) {
                 //if docked to the right, we need to insert the splitter left
+                console.log(destinationOwner.id);
                 if (location === 'top') {
                     destinationOwner.insert(positionToInsert + 1, { xtype:'splitter' });
                 } else {
@@ -229,6 +262,10 @@ Ext.define('DockingPanel.DockPanel', {
     convertLayout : function (panel, layout) {
         var newContainer = {};
 
+        if(!panel.flex) {
+            panel.flex = 1;
+        }
+
         if (layout === 'droptabpanel') {
             newContainer = {
                 xtype: 'droptabpanel',
@@ -251,7 +288,6 @@ Ext.define('DockingPanel.DockPanel', {
         panelOwner.remove(panel, false);
         newContainer = panelOwner.insert(position, newContainer);
 
-        panel.flex = 1;
         if (layout === 'droptabpanel') {
             panel = newContainer.add(panel.cloneConfig());
             newContainer.setActiveItem(panel);
@@ -270,9 +306,14 @@ Ext.define('DockingPanel.DockPanel', {
     convertTabLayoutToPanel : function (tabPanel) {
         var lastTabItem = tabPanel.items.getAt(0);
         var index = tabPanel.ownerCt.items.indexOf(tabPanel);
+        var config = lastTabItem.cloneConfig();
 
-        tabPanel.remove(lastTabItem, false);
+        tabPanel.remove(lastTabItem, true);
 
-        return tabPanel.ownerCt.insert(index, lastTabItem.cloneConfig());
+        if(!config.flex) {
+            config.flex = 1;
+        }
+
+        return tabPanel.ownerCt.insert(index, config);
     }
 });

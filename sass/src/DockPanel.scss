@@ -8,6 +8,7 @@ $dp-img-path:        "DockingPanel/img" !default;
   background: #81d0f5;
   opacity: .5;
   position: absolute;
+  z-index:1000;
 
   &.x-target-highlighter-body {
     z-index:100000;

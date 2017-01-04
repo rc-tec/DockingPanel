@@ -18,7 +18,7 @@ Ext.define('DockingPanel.dd.DropTarget', {
         this.callParent([this._el.id, 'drag-panels', config]);
 
         this._posProxy = this._el.createProxy({ tag: 'div', cls: 'x-target-highlighter' }, this._el);
-        this._posProxyOutside = this._el.createProxy({ tag: 'div', cls: 'x-target-highlighter x-target-highlighter-body' }, Ext.getBody());
+        this._posProxyOutside = this._el.createProxy({ tag: 'div', cls: 'x-target-highlighter x-target-highlighter-body' }, this._el);
 
         this._regionProxyNorth = this._el.createProxy({ tag: 'div', cls: 'x-target-splitbox-north' }, this._el);
         this._regionProxyWest = this._el.createProxy({ tag: 'div', cls: 'x-target-splitbox-west' }, this._el);
@@ -183,7 +183,9 @@ Ext.define('DockingPanel.dd.DropTarget', {
 
             this._regionProxyNorth.setLocalXY(this._splitBoxNorth.x, this._splitBoxNorth.y);
             this._regionProxyNorth.show();
-        } else {
+        }
+        else
+        {
             this._splitBoxNorth = false;
         }
 
@@ -192,7 +194,9 @@ Ext.define('DockingPanel.dd.DropTarget', {
 
             this._regionProxyEast.setLocalXY(this._splitBoxEast.x, this._splitBoxEast.y);
             this._regionProxyEast.show();
-        } else {
+        }
+        else
+        {
             this._splitBoxEast = false;
         }
 
@@ -201,7 +205,9 @@ Ext.define('DockingPanel.dd.DropTarget', {
 
             this._regionProxyWest.setLocalXY(this._splitBoxWest.x, this._splitBoxWest.y);
             this._regionProxyWest.show();
-        } else {
+        }
+        else
+        {
             this._splitBoxWest = false;
         }
 
@@ -210,7 +216,9 @@ Ext.define('DockingPanel.dd.DropTarget', {
 
             this._regionProxySouth.setLocalXY(this._splitBoxSouth.x, this._splitBoxSouth.y);
             this._regionProxySouth.show();
-        } else {
+        }
+        else
+        {
             this._splitBoxSouth = false;
         }
 
@@ -237,6 +245,8 @@ Ext.define('DockingPanel.dd.DropTarget', {
 
         if (this._targetCt.header)
             headerHeight = this._targetCt.header.getHeight();
+
+        this._posProxy.setStyle({left:null, top:null, bottom:null, right:null, height:null, width: null});
 
         //Check for Left/Top/Right/Bottom/Tab
         if (elClass.getDockingPanel().supportsDock('top') && this._splitBox.top.contains(p))
@@ -293,8 +303,8 @@ Ext.define('DockingPanel.dd.DropTarget', {
             box = {
                 x: elPos.x,
                 y: elPos.y,
-                width: elPos.width,
-                height: elPos.height
+                width: '100%',
+                height: '100%'
             };
             this._posProxy.setBox(box);
             this._posProxy.show();
@@ -310,31 +320,28 @@ Ext.define('DockingPanel.dd.DropTarget', {
                 this._destination = 'north';
 
                 box = {
-                    x: 0,
-                    y: 0,
-                    width: Ext.getBody().getWidth(),
-                    height: maxHeight
+                    width: '100%',
+                    height: maxHeightOutsideIndicator
                 };
 
                 this._posProxyOutside.setBox(box);
                 this._posProxyOutside.show();
-            } else if (this._splitBoxSouth && this._splitBoxSouth.region.contains(p))
+
+                this._posProxyOutside.setStyle({top:0, left:0, right:0, bottom: null});
+            }
+            else if (this._splitBoxSouth && this._splitBoxSouth.region.contains(p))
             {
                 this._destination = 'south';
 
-                if (target_y - elPos.y > maxHeightOutsideIndicator) {
-                    maxHeight = Ext.getBody().getHeight() - (elPos.y + elPos.height);
-                }
-
                 box = {
-                    x: 0,
-                    y: Ext.getBody().getHeight() - maxHeight,
-                    width: Ext.getBody().getWidth(),
-                    height: maxHeight
+                    width: '100%',
+                    height: maxHeightOutsideIndicator
                 };
 
                 this._posProxyOutside.setBox(box);
                 this._posProxyOutside.show();
+
+                this._posProxyOutside.setStyle({top:null, bottom:0});
             }
             else if (this._splitBoxWest && this._splitBoxWest.region.contains(p))
             {
@@ -344,29 +351,28 @@ Ext.define('DockingPanel.dd.DropTarget', {
                     x: 0,
                     y: 0,
                     width: maxWidth,
-                    height: Ext.getBody().getHeight()
+                    height: '100%'
                 };
 
                 this._posProxyOutside.setBox(box);
                 this._posProxyOutside.show();
+
+                this._posProxyOutside.setStyle({top:0, left:0});
             }
             else if (this._splitBoxEast && this._splitBoxEast.region.contains(p))
             {
                 this._destination = 'east';
 
-                if (target_x - elPos.x > maxWidthOutsideIndicator) {
-                    maxWidth = Ext.getBody().getWidth() - (elPos.x + elPos.width);
-                }
-
                 box = {
-                    x: Ext.getBody().getWidth() - maxWidth,
                     y: 0,
-                    width: maxWidth,
-                    height: Ext.getBody().getHeight()
+                    width: maxWidthOutsideIndicator,
+                    height: '100%'
                 };
 
                 this._posProxyOutside.setBox(box);
                 this._posProxyOutside.show();
+
+                this._posProxyOutside.setStyle({left:null, top:0, right:0, height : '100%'});
             }
             else
             {
