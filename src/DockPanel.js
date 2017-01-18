@@ -35,6 +35,8 @@ Ext.define('DockingPanel.DockPanel', {
     },
 
     movePanel : function (panel, destination, location) {
+        Ext.suspendLayouts();
+
         if (destination.up('droptabpanel') && panel.up('droptabpanel')) {
             //if we move something out of an droptabpanel but want it to dock beside itself
             //we need the droptabpanels parent
@@ -53,6 +55,8 @@ Ext.define('DockingPanel.DockPanel', {
             }
         }
 
+        var panelConfig = panel.cloneConfig();
+
         var newDestination = this.removePanel(panel, destination, false);
 
         //TabPanel is going to be divided into hbox or vbox
@@ -61,11 +65,19 @@ Ext.define('DockingPanel.DockPanel', {
             destination = newDestination;
         }
 
-        if (['center', 'left', 'top', 'bottom', 'right'].indexOf(location) >= 0) {
-            this.addPanel(panel.cloneConfig(), destination, location);
-        } else if (['north', 'south', 'east', 'west'].indexOf(location) >= 0) {
-            this.getDockingContainer().addPanel(panel.cloneConfig(), location);
+        if(panel.getController()) {
+            panel.getController().destroy();
         }
+
+        if (['center', 'left', 'top', 'bottom', 'right'].indexOf(location) >= 0) {
+            this.addPanel(panelConfig, destination, location);
+        } else if (['north', 'south', 'east', 'west'].indexOf(location) >= 0) {
+            this.getDockingContainer().addPanel(panelConfig, location);
+        }
+
+        panel.destroy();
+
+        Ext.resumeLayouts(true);
     },
 
     removePanel : function (panel, destination, destroy) {

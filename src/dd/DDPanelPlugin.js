@@ -7,11 +7,12 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
     title: 'Drag & Drop ',
 
     panel : null,
+    isInitialized : false,
 
     init: function (panel) {
         this.panel = panel;
 
-        this.panel.on('afterrender', this.initDragDrop, this);
+        this.panel.on('afterlayout', this.initDragDrop, this);
         this.panel.on('destroy', this.destroy, this);
     },
 
@@ -24,6 +25,10 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
     },
 
     initDragDrop: function () {
+        if(this.isInitialized) {
+            return;
+        }
+
         var dd;
 
         this.ddProxy = Ext.create('Ext.dd.DDProxy', this.getDragId(), 'drag-panels', {
@@ -90,6 +95,8 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
                 clickValidator: Ext.Function.createInterceptor(this.ddProxy.clickValidator, this.clickValidator, this, false)
             }
         );
+
+        this.isInitialized = true;
     },
 
     clickValidator : function () {
