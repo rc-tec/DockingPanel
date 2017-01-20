@@ -7,6 +7,10 @@ Ext.define('DockingPanel.DockPanel', {
     supportedDocks : ['top', 'left', 'right', 'bottom', 'center'],
     allowSplitter : true,
 
+    config : {
+        emptyPanelConfig : {}
+    },
+
     initComponent : function () {
         this.callParent(arguments);
 
@@ -161,9 +165,9 @@ Ext.define('DockingPanel.DockPanel', {
                         dockContainer.add(newCenter);
                     }
                     else {
-                        owner.add({
+                        owner.add(Ext.apply({
                             xtype: 'emptydroppanel'
-                        });
+                        }, this.getEmptyPanelConfig()));
                     }
                 } else {
                     if (owner.ownerCt.items.length === 1)
