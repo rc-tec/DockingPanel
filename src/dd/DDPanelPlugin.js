@@ -6,8 +6,8 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
 
     title: 'Drag & Drop ',
 
-    panel : null,
-    isInitialized : false,
+    panel: null,
+    isInitialized: false,
 
     init: function (panel) {
         this.panel = panel;
@@ -16,7 +16,7 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
         this.panel.on('destroy', this.destroy, this);
     },
 
-    destroy : function () {
+    destroy: function () {
         if (this._ddProxy)
             this._ddProxy.destroy();
 
@@ -25,7 +25,7 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
     },
 
     initDragDrop: function () {
-        if(this.isInitialized) {
+        if (this.isInitialized) {
             return;
         }
 
@@ -39,38 +39,33 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
 
         Ext.apply(this.ddProxy,
             {
-                startDrag: function (e)
-                {
+                startDrag: function (e) {
                     if (!this.panel.up('droptabpanel')) {
                         this.target.disableTarget();
                     }
                 }.bind(this),
-                onDragEnter: function (e, id)
-                {
+                onDragEnter: function (e, id) {
                     dd = Ext.dd.DragDropManager.getDDById(id);
 
                     if (dd) {
                         dd.notifyEnter(this.panel, e.getXY()[0], e.getXY()[1]);
                     }
                 }.bind(this),
-                onDragOver: function (e, id)
-                {
+                onDragOver: function (e, id) {
                     dd = Ext.dd.DragDropManager.getDDById(id);
 
                     if (dd) {
                         dd.notifyOver(this.panel, e.getXY()[0], e.getXY()[1]);
                     }
                 }.bind(this),
-                onDragOut: function (e, id)
-                {
+                onDragOut: function (e, id) {
                     dd = Ext.dd.DragDropManager.getDDById(id);
 
                     if (dd) {
                         dd.notifyOut(this.panel, e.getXY()[0], e.getXY()[1]);
                     }
                 }.bind(this),
-                onDragDrop: function (e, id)
-                {
+                onDragDrop: function (e, id) {
                     dd = Ext.dd.DragDropManager.getDDById(id);
 
                     if (dd.isEnabled()) {
@@ -82,12 +77,11 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
                         }
                     }
                 }.bind(this),
-                endDrag: function (e, id)
-                {
+                endDrag: function (e, id) {
                     var targets = Ext.dd.DragDropManager.getRelated(this.panel, true);
 
                     for (var i = 0; i < targets.length; i++) {
-                        targets[i].notifyEndDrag(this.panel,  e.getXY()[0], e.getXY()[1]);
+                        targets[i].notifyEndDrag(this.panel, e.getXY()[0], e.getXY()[1]);
                     }
 
                     this.target.enableTarget();
@@ -99,11 +93,11 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
         this.isInitialized = true;
     },
 
-    clickValidator : function () {
+    clickValidator: function () {
         return true;
     },
 
-    getPanelHeaderId : function () {
+    getPanelHeaderId: function () {
         if (this.panel.up('droptabpanel')) {
             return this.panel.tab.id;
         }
@@ -114,7 +108,7 @@ Ext.define('DockingPanel.dd.DDPanelPlugin', {
         return this.panel.id;
     },
 
-    getDragId : function () {
+    getDragId: function () {
         return this.panel.tab ? this.panel.tab.el.id : this.panel.el.id;
     }
 });

@@ -20,7 +20,7 @@ Ext.define('DockingPanel.DropTabPanel', {
         this.callParent(arguments);
     },
 
-    getDockingPanel : function () {
+    getDockingPanel: function () {
         return this.up('dockpanel');
     }
 });

@@ -2,16 +2,16 @@ Ext.define('DockingPanel.DockPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.dockpanel',
 
-    layout : 'fit',
+    layout: 'fit',
 
-    supportedDocks : ['top', 'left', 'right', 'bottom', 'center'],
-    allowSplitter : true,
+    supportedDocks: ['top', 'left', 'right', 'bottom', 'center'],
+    allowSplitter: true,
 
-    config : {
-        emptyPanelConfig : {}
+    config: {
+        emptyPanelConfig: {}
     },
 
-    initComponent : function () {
+    initComponent: function () {
         this.callParent(arguments);
 
         if (this.items.length === 0) {
@@ -19,18 +19,18 @@ Ext.define('DockingPanel.DockPanel', {
         }
     },
 
-    getDockingContainer : function () {
+    getDockingContainer: function () {
         return this.up('dockcontainer');
     },
 
-    supportsRegion : function (region) {
+    supportsRegion: function (region) {
         if (this.region !== 'center')
             return false;
 
         return this.getDockingContainer().supportedRegions.indexOf(region) >= 0;
     },
 
-    supportsDock : function (location) {
+    supportsDock: function (location) {
         if (this.down('emptydroppanel')) {
             return ['center'].indexOf(location) >= 0;
         }
@@ -38,14 +38,14 @@ Ext.define('DockingPanel.DockPanel', {
         return this.supportedDocks.indexOf(location) >= 0;
     },
 
-    movePanel : function (panel, destination, location) {
+    movePanel: function (panel, destination, location) {
         Ext.suspendLayouts();
 
         if (destination.up('droptabpanel') && panel.up('droptabpanel')) {
             //if we move something out of an droptabpanel but want it to dock beside itself
             //we need the droptabpanels parent
 
-            if(destination.up('droptabpanel').id === panel.up('droptabpanel').id) {
+            if (destination.up('droptabpanel').id === panel.up('droptabpanel').id) {
                 if (panel.up('droptabpanel').items.length > 2) {
                     destination = destination.up('droptabpanel');
                 }
@@ -53,8 +53,8 @@ Ext.define('DockingPanel.DockPanel', {
         }
 
         //If we move from any droptabpanel, we need to add a flex property
-        if(panel.up('droptabpanel')) {
-            if(!panel.flex) {
+        if (panel.up('droptabpanel')) {
+            if (!panel.flex) {
                 panel.flex = 1;
             }
         }
@@ -69,7 +69,7 @@ Ext.define('DockingPanel.DockPanel', {
             destination = newDestination;
         }
 
-        if(panel.getController()) {
+        if (panel.getController()) {
             panel.getController().destroy();
         }
 
@@ -84,7 +84,7 @@ Ext.define('DockingPanel.DockPanel', {
         Ext.resumeLayouts(true);
     },
 
-    removePanel : function (panel, destination, destroy) {
+    removePanel: function (panel, destination, destroy) {
         var owner = panel.ownerCt,
             newDestination = null,
             index = 0,
@@ -147,16 +147,16 @@ Ext.define('DockingPanel.DockPanel', {
                     var newCenter = null;
                     var dockContainer = owner.up("dockcontainer");
 
-                    if(dockContainer.items.length > 1) {
-                        Ext.each(dockContainer.items.items, function(item) {
-                            if(item.region !== null && item.region !== 'center' && item.xtype !== 'bordersplitter') {
+                    if (dockContainer.items.length > 1) {
+                        Ext.each(dockContainer.items.items, function (item) {
+                            if (item.region !== null && item.region !== 'center' && item.xtype !== 'bordersplitter') {
                                 newCenter = item;
                                 return false;
                             }
                         });
                     }
 
-                    if(newCenter) {
+                    if (newCenter) {
                         dockContainer.remove(owner, true);
                         dockContainer.remove(newCenter, false);
 
@@ -182,7 +182,7 @@ Ext.define('DockingPanel.DockPanel', {
         return newDestination;
     },
 
-    addPanel : function (panel, destination, location) {
+    addPanel: function (panel, destination, location) {
         var destinationOwner,
             originalDestination = destination,
             destinationLayout,
@@ -193,8 +193,7 @@ Ext.define('DockingPanel.DockPanel', {
             //destination = destination.ownerCt;
         }
 
-        if (destination.up('droptabpanel') && location !== 'center')
-        {
+        if (destination.up('droptabpanel') && location !== 'center') {
             destination = destination.ownerCt;
         }
 
@@ -222,9 +221,9 @@ Ext.define('DockingPanel.DockPanel', {
             if (this.allowSplitter) {
                 //if docked to the right, we need to insert the splitter left
                 if (location === 'right') {
-                    destinationOwner.insert(positionToInsert, { xtype:'splitter' });
+                    destinationOwner.insert(positionToInsert, {xtype: 'splitter'});
                 } else {
-                    destinationOwner.insert(positionToInsert + 1, { xtype:'splitter' });
+                    destinationOwner.insert(positionToInsert + 1, {xtype: 'splitter'});
                 }
             }
         } else if (location === 'top' || location === 'bottom') {
@@ -245,9 +244,9 @@ Ext.define('DockingPanel.DockPanel', {
                 //if docked to the right, we need to insert the splitter left
                 console.log(destinationOwner.id);
                 if (location === 'top') {
-                    destinationOwner.insert(positionToInsert + 1, { xtype:'splitter' });
+                    destinationOwner.insert(positionToInsert + 1, {xtype: 'splitter'});
                 } else {
-                    destinationOwner.insert(positionToInsert, { xtype:'splitter' });
+                    destinationOwner.insert(positionToInsert, {xtype: 'splitter'});
                 }
             }
         } else if (location === 'center') {
@@ -275,10 +274,10 @@ Ext.define('DockingPanel.DockPanel', {
      * @param layout hbox or vbox
      * @returns Ext.container.Container
      */
-    convertLayout : function (panel, layout) {
+    convertLayout: function (panel, layout) {
         var newContainer = {};
 
-        if(!panel.flex) {
+        if (!panel.flex) {
             panel.flex = 1;
         }
 
@@ -319,14 +318,14 @@ Ext.define('DockingPanel.DockPanel', {
      *
      * @param tabPanel
      */
-    convertTabLayoutToPanel : function (tabPanel) {
+    convertTabLayoutToPanel: function (tabPanel) {
         var lastTabItem = tabPanel.items.getAt(0);
         var index = tabPanel.ownerCt.items.indexOf(tabPanel);
         var config = lastTabItem.cloneConfig();
 
         tabPanel.remove(lastTabItem, true);
 
-        if(!config.flex) {
+        if (!config.flex) {
             config.flex = 1;
         }
 

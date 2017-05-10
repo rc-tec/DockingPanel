@@ -11,62 +11,62 @@ Ext.define('DockingPanelExample.view.MainView', {
 
     items: [
         {
-            xtype : 'dockcontainer',
-            items : [
+            xtype: 'dockcontainer',
+            items: [
                 {
-                    xtype : 'dockpanel',
-                    region : 'north',
-                    height : 200,
-                    supportedDocks : ['center', 'left', 'right']
+                    xtype: 'dockpanel',
+                    region: 'north',
+                    height: 200,
+                    supportedDocks: ['center', 'left', 'right']
                 },
                 {
-                    xtype : 'dockpanel',
-                    region : 'south',
-                    height : 200,
-                    supportedDocks : ['center', 'left', 'right'],
-                    items : [
+                    xtype: 'dockpanel',
+                    region: 'south',
+                    height: 200,
+                    supportedDocks: ['center', 'left', 'right'],
+                    items: [
                         {
                             xtype: 'droppanel',
                             flex: 1,
                             html: 'Left Box',
                             layout: 'fit',
-                            title : 'South'
+                            title: 'South'
                         }
                     ]
                 },
                 {
-                    xtype : 'dockpanel',
-                    region : 'west',
-                    width : 200,
-                    supportedDocks : ['center', 'top', 'bottom'],
-                    items : [
+                    xtype: 'dockpanel',
+                    region: 'west',
+                    width: 200,
+                    supportedDocks: ['center', 'top', 'bottom'],
+                    items: [
                         {
                             xtype: 'droppanel',
                             flex: 1,
                             html: 'Left Box',
                             layout: 'fit',
-                            title : 'West'
+                            title: 'West'
                         }
                     ]
                 },
                 {
-                    xtype : 'dockpanel',
-                    region : 'east',
-                    width : 200,
-                    supportedDocks : ['center', 'top', 'bottom'],
-                    items : [
+                    xtype: 'dockpanel',
+                    region: 'east',
+                    width: 200,
+                    supportedDocks: ['center', 'top', 'bottom'],
+                    items: [
                         {
                             xtype: 'droppanel',
                             flex: 1,
                             html: 'Left Box',
                             layout: 'fit',
-                            title : 'East'
+                            title: 'East'
                         }
                     ]
                 },
                 {
-                    xtype : 'dockpanel',
-                    region : 'center',
+                    xtype: 'dockpanel',
+                    region: 'center',
                     layout: {
                         type: 'hbox',
                         align: 'stretch'
@@ -78,76 +78,73 @@ Ext.define('DockingPanelExample.view.MainView', {
                             flex: 1,
                             html: 'Left Box',
                             layout: 'fit',
-                            title : 'Most Left'
+                            title: 'Most Left'
                         },
                         {
-                            xtype : 'splitter'
+                            xtype: 'splitter'
                         },
                         {
-                            xtype : 'panel',
-                            flex : 1,
-                            layout : {
-                                type : 'vbox',
-                                align : 'stretch'
+                            xtype: 'panel',
+                            flex: 1,
+                            layout: {
+                                type: 'vbox',
+                                align: 'stretch'
                             },
-                            items : [
+                            items: [
                                 {
                                     xtype: 'droppanel',
                                     html: 'Top Box',
                                     flex: 1,
-                                    title : 'Top'
+                                    title: 'Top'
                                 },
                                 {
-                                    xtype : 'splitter'
+                                    xtype: 'splitter'
                                 },
                                 {
                                     xtype: 'droppanel',
                                     html: 'Bottom Box',
                                     flex: 1,
-                                    title : 'Bottom'
+                                    title: 'Bottom'
                                 }
                             ]
                         },
                         {
-                            xtype : 'splitter'
+                            xtype: 'splitter'
                         },
                         {
                             xtype: 'droptabpanel',
                             flex: 1,
-                            layout:
-                            {
+                            layout: {
                                 type: 'card'
                             },
                             items: [
                                 {
                                     xtype: 'droppanel',
-                                    title : 'First Entry',
+                                    title: 'First Entry',
                                     flex: 1,
-                                    layout:
-                                    {
+                                    layout: {
                                         type: 'autocontainer'
                                     },
                                     items: []
                                 },
                                 {
                                     xtype: 'droppanel',
-                                    title : 'Second Entry',
+                                    title: 'Second Entry',
                                     flex: 1,
-                                    layout:
-                                    {
+                                    layout: {
                                         type: 'autocontainer'
                                     },
                                     items: []
                                 }]
                         },
                         {
-                            xtype : 'splitter'
+                            xtype: 'splitter'
                         },
                         {
                             xtype: 'droppanel',
                             flex: 1,
                             html: 'Right Box',
-                            title : 'Most Right'
+                            title: 'Most Right'
                         }
                     ]
                 }

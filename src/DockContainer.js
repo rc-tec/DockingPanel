@@ -15,11 +15,11 @@ Ext.define('DockingPanel.DockContainer', {
         split: true
     },
 
-    supportedRegions : [
+    supportedRegions: [
         'south', 'east', 'west', 'north'
     ],
 
-    addPanel : function (panel, region) {
+    addPanel: function (panel, region) {
         var regionPanel = this.getDockPanelForRegion(region);
 
         if (regionPanel) {
@@ -34,7 +34,7 @@ Ext.define('DockingPanel.DockContainer', {
         }
     },
 
-    getDockPanelForRegion : function (region) {
+    getDockPanelForRegion: function (region) {
         var regionPanel = this.down('dockpanel[region="' + region + '"]');
 
         if (!regionPanel) {
@@ -44,19 +44,19 @@ Ext.define('DockingPanel.DockContainer', {
         return regionPanel;
     },
 
-    createRegionDockPanel : function (region) {
+    createRegionDockPanel: function (region) {
         var panel = {
-            xtype : 'dockpanel',
-            region : region,
-            width : 200,
-            height : 200,
-            supportedDocks : ['center']
+            xtype: 'dockpanel',
+            region: region,
+            width: 200,
+            height: 200,
+            supportedDocks: ['center']
         };
 
         return this.add(panel);
     },
 
-    getJson : function () {
+    getJson: function () {
         var properties = [
             'xtype', 'flex', 'itemId', 'width', 'height', 'html', 'extra', 'region', 'title'
         ], i, property;
