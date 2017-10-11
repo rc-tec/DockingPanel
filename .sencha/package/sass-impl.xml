@@ -9,26 +9,35 @@
     </target>
 
     <target name="-compile-sass-rtl-theme" depends="-init-sass-compiler" if="is.theme.package">
-        <x-compile refid="${compiler.ref.id}">
-            <![CDATA[
-            include
-                -all
-            and
-            sass
-                -etc=true
-                -vars=true
-                -rules=true
-                -class-name-vars=true
-                -variable=$image-search-path:'${image.search.path}' !default
-                -variable=$theme-name: '${package.name}' !default
-                -output=${build.all.rtl.scss}
-                -forward=${package.sass.dynamic}
-            and
-            sass
-                -ruby=true
-                -output=${build.all.ruby}
-            ]]>
-        </x-compile>
+        <!-- skip if package.output.framework.rtl is explicitly set to false -->
+        <if>
+            <or>
+                <not><isset property="package.output.framework.rtl" /></not>
+                <x-is-true value="${package.output.framework.rtl}" />
+            </or>
+            <then>
+                <x-compile refid="${compiler.ref.id}">
+                    <![CDATA[
+                    include
+                        -all
+                    and
+                    sass
+                        -etc=true
+                        -vars=true
+                        -rules=true
+                        -class-name-vars=true
+                        -variable=$image-search-path:'${image.search.path}' !default
+                        -variable=$theme-name: '${package.name}' !default
+                        -output=${build.all.rtl.scss}
+                        -forward=${package.sass.dynamic}
+                    and
+                    sass
+                        -ruby=true
+                        -output=${build.all.ruby}
+                    ]]>
+                </x-compile>
+            </then>
+        </if>
     </target>
 
     <target name="-compile-sass-ltr-theme" depends="-init-sass-compiler" if="is.theme.package">
@@ -59,50 +68,59 @@
     </target>
 
     <target name="-compile-sass-rtl" depends="-init-sass-compiler" unless="is.theme.package">
-        <x-compile refid="${compiler.ref.id}">
-            <![CDATA[
-            exclude
-                -all
-            and
-            include
-                -tag=package-${package.name}
-            and
-            save
-                pkg
-            and
-            sass
-                -class-name-vars=true
-                -variable=$image-search-path:'${image.search.path}' !default
-                -variable=$theme-name: '${theme.name}' !default
-                -output=${build.all.rtl.scss}
-                -forward=${package.sass.dynamic}
-            and
-            include
-                -all
-            and
-            save
-                all
-            and
-            sass
-                -etc=true
-                -vars=true
-                +append
-                -output=${build.all.rtl.scss}
-                -forward=${package.sass.dynamic}
-            and
-            restore
-                pkg
-            and
-            sass
-                -rules=true
-                +append
-                -output=${build.all.rtl.scss}
-            and
-            sass
-                -ruby=true
-                -output=${build.all.ruby}
-            ]]>
-        </x-compile>
+        <!-- skip if package.output.framework.rtl is explicitly set to false -->
+        <if>
+            <or>
+                <not><isset property="package.output.framework.rtl" /></not>
+                <x-is-true value="${package.output.framework.rtl}"/>
+            </or>
+            <then>
+                <x-compile refid="${compiler.ref.id}">
+                    <![CDATA[
+                    exclude
+                        -all
+                    and
+                    include
+                        -tag=package-${package.name}
+                    and
+                    save
+                        pkg
+                    and
+                    sass
+                        -class-name-vars=true
+                        -variable=$image-search-path:'${image.search.path}' !default
+                        -variable=$theme-name: '${theme.name}' !default
+                        -output=${build.all.rtl.scss}
+                        -forward=${package.sass.dynamic}
+                    and
+                    include
+                        -all
+                    and
+                    save
+                        all
+                    and
+                    sass
+                        -etc=true
+                        -vars=true
+                        +append
+                        -output=${build.all.rtl.scss}
+                        -forward=${package.sass.dynamic}
+                    and
+                    restore
+                        pkg
+                    and
+                    sass
+                        -rules=true
+                        +append
+                        -output=${build.all.rtl.scss}
+                    and
+                    sass
+                        -ruby=true
+                        -output=${build.all.ruby}
+                    ]]>
+                </x-compile>
+            </then>
+        </if>
     </target>
 
     <target name="-compile-sass-ltr" depends="-init-sass-compiler" unless="is.theme.package">
@@ -240,10 +258,12 @@
 
                     <x-sencha-command>
                         fashion
-                        -compress=@{compress}
-                        -split=${build.css.selector.limit}
-                        @{cssfile}
-                        ${css.output.name}
+                            -config=${package.dir}/package.json
+                            -compress=@{compress}
+                            -split=${build.css.selector.limit}
+                            -slicer=false
+                            @{cssfile}
+                            ${css.output.name}
                     </x-sencha-command>
 
                 </sequential>
@@ -251,7 +271,7 @@
         </sequential>
     </macrodef>
 
-    <target name="-compass-compile" depends="-load-sass-page,-compile-sass">
+    <target name="-compass-compile" depends="-compile-sass">
         <if>
             <x-is-true value="${package.sass.fashion}"/>
             <then>

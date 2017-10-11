@@ -70,10 +70,6 @@
         -->
         <x-sencha-init prefix=""/>
         
-        <!-- 
-        default the build environment to production if it is unset by this point 
-        -->
-        <property name="build.environment" value="production"/>
         <property name="CR" value="&#10;"/>
         <property name="build.version" value="${package.version}"/>
 
@@ -101,9 +97,11 @@
         See if there is a ./sass subfolder
         -->
         <if>
-            <not>
-                <available file="${package.sass.dir}" type="dir"/>
-            </not>
+            <or>
+                <equals arg1="${package.sass}" arg2="false"/>
+                <equals arg1="${package.sass}" arg2="0"/>
+                <equals arg1="${package.sass}" arg2="null"/>
+            </or>
             <then>
                 <property name="skip.sass" value="1"/>
             </then>
@@ -119,7 +117,10 @@
                     <equals arg1="theme" arg2="${package.type}"/>
                 </not>
                 <equals arg1="touch" arg2="${framework.name}"/>
-                <equals arg1="modern" arg2="${package.toolkit}"/>
+                <equals arg1="modern" arg2="${toolkit.name}"/>
+                <equals arg1="false" arg2="${package.slicer}"/>
+                <equals arg1="null" arg2="${package.slicer}"/>
+                <equals arg1="0" arg2="${package.slicer}"/>
             </or>
             <then>
                 <property name="skip.slice" value="1"/>

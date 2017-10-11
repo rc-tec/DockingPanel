@@ -2,7 +2,6 @@
   "name": "DockingPanel",
   "namespace": "DockingPanel",
   "type": "code",
-  "toolkit": "${args.toolkit}",
   "creator": "RCTec Gmbh",
   "summary": "Allows Panels to be Drag'n'Drop docked to other Panels",
   "detailedDescription": "Allows Panels to be Drag'n'Drop docked to other Panels",
